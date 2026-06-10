@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rats Challenge</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh; padding: 20px;
+        }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; }
+        header h1 { font-size: 2.5em; margin-bottom: 10px; }
+        header p { font-size: 1.1em; opacity: 0.9; }
+        .tabs { display: flex; background: #f5f5f5; border-bottom: 2px solid #e0e0e0; overflow-x: auto; }
+        .tab-btn { flex: 1; padding: 15px 20px; border: none; background: none; cursor: pointer; font-size: 0.95em; font-weight: 500; color: #666; white-space: nowrap; transition: all 0.3s ease; border-bottom: 3px solid transparent; }
+        .tab-btn:hover { background: #efefef; }
+        .tab-btn.active { color: #667eea; border-bottom-color: #667eea; }
+        .content { padding: 40px; min-height: 600px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .metric { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; text-align: center; }
+        .metric .value { font-size: 2em; font-weight: bold; margin-bottom: 5px; }
+        .metric .label { font-size: 0.9em; opacity: 0.9; }
+        .podium { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
+        .podium-item { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .podium-medal { font-size: 3em; margin-bottom: 10px; }
+        .podium-name { font-weight: bold; font-size: 1.1em; margin-bottom: 8px; }
+        .podium-points { color: #667eea; font-weight: bold; font-size: 1.2em; }
+        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
+        th { background: #f5f5f5; padding: 12px; text-align: left; font-weight: 600; color: #333; border-bottom: 2px solid #e0e0e0; }
+        td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
+        tr:hover { background: #f9f9f9; }
+        .rank { font-weight: bold; color: #667eea; width: 40px; }
+        .fun-fact { background: #f0f4ff; border-left: 4px solid #667eea; padding: 15px 20px; margin-bottom: 15px; border-radius: 4px; }
+        .fun-fact strong { color: #667eea; }
+        .empty-state { text-align: center; padding: 60px 20px; color: #aaa; font-size: 1.1em; }
+        .empty-state .icon { font-size: 3em; margin-bottom: 15px; }
+        footer { background: #f5f5f5; padding: 20px; text-align: center; font-size: 0.9em; color: #666; border-top: 1px solid #e0e0e0; }
+        @media (max-width: 768px) {
+            .tab-btn { padding: 12px 10px; font-size: 0.85em; }
+            .content { padding: 20px; }
+            header h1 { font-size: 1.8em; }
+            .metrics { grid-template-columns: 1fr; }
+        }
+        .classificacao-container { padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; color: white; }
+        .cat-selectors { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
+        .genero-selector, .periodo-selector { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        .periodo-selector { border-top: 1px solid rgba(255,255,255,0.2); padding-top: 12px; }
+        .genero-btn, .periodo-btn { padding: 9px 20px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; border-radius: 25px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.25s ease; }
+        .genero-btn:hover, .periodo-btn:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.6); transform: translateY(-2px); }
+        .genero-btn.active, .periodo-btn.active { background: rgba(255,255,255,0.3); border-color: white; box-shadow: 0 0 20px rgba(255,255,255,0.35); transform: scale(1.05); }
+        .cat-periodo-label { text-align: center; font-size: 13px; opacity: 0.75; margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
+        .categorias-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 20px; }
+        .categoria-card { background: rgba(255,255,255,0.98); border-radius: 18px; padding: 0; color: #333; box-shadow: 0 10px 40px rgba(0,0,0,0.15); transition: all 0.3s ease; position: relative; overflow: hidden; display: flex; flex-direction: column; }
+        .categoria-card:hover { transform: translateY(-8px); box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
+        .categoria-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: linear-gradient(180deg, var(--color-primary), var(--color-secondary)); }
+        .categoria-header { padding: 28px 25px; text-align: center; background: linear-gradient(135deg, rgba(var(--color-rgb),0.1), rgba(var(--color-rgb),0.05)); border-bottom: 2px solid rgba(var(--color-rgb),0.1); }
+        .categoria-icon { font-size: 60px; line-height: 1; margin-bottom: 10px; display: inline-block; }
+        .categoria-title { margin: 0; font-size: 17px; font-weight: 700; color: var(--color-primary, #667eea); }
+        .categoria-desc { font-size: 12px; color: #999; margin: 5px 0 0 0; font-weight: 500; }
+        .categoria-podio { padding: 18px 22px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
+        .podio-place { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: linear-gradient(90deg, rgba(var(--color-rgb),0.08), transparent); border-left: 4px solid var(--color-primary); border-radius: 8px; }
+        .podio-medal { font-size: 30px; line-height: 1; min-width: 42px; text-align: center; }
+        .podio-info { flex: 1; min-width: 0; }
+        .podio-name { font-weight: 700; color: var(--color-primary, #333); font-size: 14px; word-break: break-word; margin: 0; }
+        .podio-points { font-size: 12px; color: #666; margin-top: 3px; font-weight: 500; }
+        .podio-empty { padding: 20px; text-align: center; color: #ccc; font-size: 13px; }
+        .categoria-card[data-categoria="general"]     { --color-primary:#FFD700; --color-secondary:#FFA500; --color-rgb:255,215,0; }
+        .categoria-card[data-categoria="kom"]         { --color-primary:#FF6B6B; --color-secondary:#EE5A6F; --color-rgb:255,107,107; }
+        .categoria-card[data-categoria="velocista"]   { --color-primary:#4ECDC4; --color-secondary:#44A5A2; --color-rgb:78,205,196; }
+        .categoria-card[data-categoria="combativo"]   { --color-primary:#F38181; --color-secondary:#D46A6A; --color-rgb:243,129,129; }
+        .categoria-card[data-categoria="novato"]      { --color-primary:#95E1D3; --color-secondary:#78D5C5; --color-rgb:149,225,211; }
+        .categoria-card[data-categoria="ascensao"]    { --color-primary:#A8E6CF; --color-secondary:#8DDCB8; --color-rgb:168,230,207; }
+        .categoria-card[data-categoria="especialista"]{ --color-primary:#FFD3B6; --color-secondary:#FFBC94; --color-rgb:255,211,182; }
+        .categoria-card[data-categoria="versatil"]    { --color-primary:#9A8FDB; --color-secondary:#8374C8; --color-rgb:154,143,219; }
+        @media(max-width:768px){ .categorias-grid{grid-template-columns:1fr;} .categoria-icon{font-size:48px;} .genero-btn,.periodo-btn{flex:1;min-width:80px;text-align:center;padding:8px 12px;font-size:13px;} }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <header>
+        <h1>🏋️ Rats Challenge</h1>
+        <p>Dashboard de Ranking e Estatísticas</p>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(event,'overview')">📊 Overview</button>
+        <button class="tab-btn" onclick="switchTab(event,'classificacao')">🏅 Categorias</button>
+        <button class="tab-btn" onclick="switchTab(event,'podium')">🏆 Pódio</button>
+        <button class="tab-btn" onclick="switchTab(event,'monthly')">📅 Mensal</button>
+        <button class="tab-btn" onclick="switchTab(event,'weekly')">📈 Semanal</button>
+        <button class="tab-btn" onclick="switchTab(event,'evolution')">📉 Evolução</button>
+        <button class="tab-btn" onclick="switchTab(event,'activities')">💪 Atividades</button>
+        <button class="tab-btn" onclick="switchTab(event,'curiosities')">🎯 Curiosidades</button>
+        <button class="tab-btn" onclick="switchTab(event,'var')">⚠️ VAR</button>
+    </div>
+
+    <div class="content">
+
+        <!-- ABA 1: OVERVIEW -->
+        <div id="overview" class="tab-content active">
+            <h2>📊 Resumo Geral</h2>
+            <div class="metrics">
+                <div class="metric"><div class="value">—</div><div class="label">Check-ins Total</div></div>
+                <div class="metric"><div class="value">—</div><div class="label">Pontos do Grupo</div></div>
+                <div class="metric"><div class="value">—</div><div class="label">Horas de Atividade</div></div>
+                <div class="metric"><div class="value">—</div><div class="label">Participantes Ativos</div></div>
+            </div>
+            <h3>🏆 Top 3 Geral</h3>
+            <div class="podium">
+                <div class="podium-item"><div class="podium-medal">🥇</div><div class="podium-name">—</div><div class="podium-points">— pts</div></div>
+                <div class="podium-item"><div class="podium-medal">🥈</div><div class="podium-name">—</div><div class="podium-points">— pts</div></div>
+                <div class="podium-item"><div class="podium-medal">🥉</div><div class="podium-name">—</div><div class="podium-points">— pts</div></div>
+            </div>
+            <h3>📊 Ranking Completo</h3>
+            <div class="empty-state"><div class="icon">📭</div>Aguardando dados do primeiro JSON</div>
+        </div>
+
+        <!-- ABA 2: CATEGORIAS -->
+        <div id="classificacao" class="tab-content">
+            <div class="classificacao-container">
+                <div class="cat-selectors">
+                    <div class="cat-periodo-label">Gênero</div>
+                    <div class="genero-selector">
+                        <button class="genero-btn active" data-genero="geral">🌍 Geral</button>
+                        <button class="genero-btn" data-genero="masculino">👨 Homens</button>
+                        <button class="genero-btn" data-genero="feminino">👩 Mulheres</button>
+                    </div>
+                    <div class="cat-periodo-label">Período</div>
+                    <div class="periodo-selector">
+                        <button class="periodo-btn active" data-periodo="ytd">📊 YTD</button>
+                    </div>
+                </div>
+                <div id="categorias-grid" class="categorias-grid"></div>
+            </div>
+        </div>
+
+        <!-- ABA 3: PÓDIO -->
+        <div id="podium" class="tab-content">
+            <h2>🏆 Pódio Final</h2>
+            <div class="podium">
+                <div class="podium-item"><div class="podium-medal">🥇</div><div class="podium-name">—</div><div class="podium-points">— pts</div></div>
+                <div class="podium-item"><div class="podium-medal">🥈</div><div class="podium-name">—</div><div class="podium-points">— pts</div></div>
+                <div class="podium-item"><div class="podium-medal">🥉</div><div class="podium-name">—</div><div class="podium-points">— pts</div></div>
+            </div>
+            <div class="empty-state"><div class="icon">📭</div>Aguardando dados do primeiro JSON</div>
+        </div>
+
+        <!-- ABA 4: MENSAL -->
+        <div id="monthly" class="tab-content">
+            <h2>📅 Ranking por Mês</h2>
+            <div class="empty-state"><div class="icon">📭</div>Aguardando dados do primeiro JSON</div>
+        </div>
+
+        <!-- ABA 5: SEMANAL -->
+        <div id="weekly" class="tab-content">
+            <h2>📈 Ranking por Semana</h2>
+            <div class="empty-state"><div class="icon">📭</div>Aguardando dados do primeiro JSON</div>
+        </div>
+
+        <!-- ABA 6: EVOLUÇÃO -->
+        <div id="evolution" class="tab-content">
+            <h2>📉 Evolução de Ranking</h2>
+            <p style="font-size:0.9em;color:#666;">Gráfico mostrando a evolução do ranking dos Top 10 competidores ao longo das semanas</p>
+            <div style="margin-top:20px;position:relative;height:520px;">
+                <canvas id="evolutionChart"></canvas>
+            </div>
+            <div class="empty-state"><div class="icon">📭</div>Aguardando dados do primeiro JSON</div>
+        </div>
+
+        <!-- ABA 7: ATIVIDADES -->
+        <div id="activities" class="tab-content">
+            <h2>💪 Top Tipos de Atividade</h2>
+            <div class="empty-state"><div class="icon">📭</div>Aguardando dados do primeiro JSON</div>
+        </div>
+
+        <!-- ABA 8: CURIOSIDADES -->
+        <div id="curiosities" class="tab-content">
+            <h2>🎯 Curiosidades do Desafio</h2>
+            <div class="empty-state"><div class="icon">📭</div>Aguardando dados do primeiro JSON</div>
+        </div>
+
+        <!-- ABA 9: VAR -->
+        <div id="var" class="tab-content">
+            <h2>⚠️ VAR - Verificação de Atividades Reais</h2>
+            <p style="color:#666;margin-bottom:20px;">Atividades suspeitas detectadas:</p>
+            <div class="empty-state"><div class="icon">✅</div>Nenhuma atividade suspeita detectada</div>
+        </div>
+
+    </div>
+
+    <footer>
+        <p>Aguardando primeira atualização</p>
+        <p>Rats Challenge • GymRats Analytics</p>
+    </footer>
+</div>
+
+<script>
+    function switchTab(event, tabName) {
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById(tabName).classList.add('active');
+        event.target.classList.add('active');
+    }
+
+    const _catConfig = [
+        {key:"general",      nome:"Pódio Geral",            icon:"🏆", desc:"Maior pontuação acumulada"},
+        {key:"kom",          nome:"Rei/Rainha da Montanha", icon:"👑", desc:"Especialista em força e HIIT"},
+        {key:"velocista",    nome:"Velocista",              icon:"💨", desc:"Especialista em cardio"},
+        {key:"combativo",    nome:"Espírito Combativo",     icon:"🔥", desc:"Maior nº de dias treinados"},
+        {key:"novato",       nome:"Melhor Novato",          icon:"👶", desc:"Melhor entre os novatos"},
+        {key:"ascensao",     nome:"Ascensão Meteórica",     icon:"📈", desc:"Maior crescimento mês a mês (YTD)"},
+        {key:"especialista", nome:"Especialista",           icon:"🎯", desc:"Líder em sua especialidade"},
+        {key:"versatil",     nome:"Treinador Versátil",     icon:"🔄", desc:"Mais tipos de treinos"},
+    ];
+
+    function _renderCat() {
+        const grid = document.getElementById("categorias-grid");
+        if (!grid) return;
+        grid.innerHTML = "";
+        _catConfig.forEach(cfg => {
+            const card = document.createElement("div");
+            card.className = "categoria-card";
+            card.setAttribute("data-categoria", cfg.key);
+            card.innerHTML =
+                '<div class="categoria-header">' +
+                    '<div class="categoria-icon">' + cfg.icon + '</div>' +
+                    '<h3 class="categoria-title">' + cfg.nome + '</h3>' +
+                    '<p class="categoria-desc">' + cfg.desc + '</p>' +
+                '</div>' +
+                '<div class="categoria-podio"><div class="podio-empty">Aguardando dados</div></div>';
+            grid.appendChild(card);
+        });
+    }
+
+    document.querySelectorAll(".genero-btn").forEach(btn => {
+        btn.addEventListener("click", function() {
+            document.querySelectorAll(".genero-btn").forEach(b => b.classList.remove("active"));
+            this.classList.add("active");
+        });
+    });
+
+    document.addEventListener("DOMContentLoaded", _renderCat);
+</script>
+</body>
+</html>
