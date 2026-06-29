@@ -3,239 +3,850 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Work ou #OpentoWork Challenge</title>
+    <title>Tembici Rats Challenge</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; }
-        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 40px 20px; text-align: center; }
-        header h1 { font-size: 2.5em; margin-bottom: 10px; }
-        header p { font-size: 1.1em; opacity: 0.9; }
-        .tabs { display: flex; background: #f5f5f5; border-bottom: 2px solid #e0e0e0; overflow-x: auto; }
-        .tab-btn { flex: 1; padding: 15px 20px; border: none; background: none; cursor: pointer; font-size: 0.95em; font-weight: 500; color: #666; white-space: nowrap; transition: all 0.3s ease; border-bottom: 3px solid transparent; }
-        .tab-btn:hover { background: #efefef; }
-        .tab-btn.active { color: #667eea; border-bottom-color: #667eea; }
-        .content { padding: 40px; min-height: 600px; }
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-        .metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .metric { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px; text-align: center; }
-        .metric .value { font-size: 2em; font-weight: bold; margin-bottom: 5px; }
-        .metric .label { font-size: 0.9em; opacity: 0.9; }
-        .podium { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 20px; margin-bottom: 40px; }
-        .podium-item { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); padding: 20px; border-radius: 12px; text-align: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        .podium-medal { font-size: 3em; margin-bottom: 10px; }
-        .podium-name { font-weight: bold; font-size: 1.1em; margin-bottom: 8px; }
-        .podium-points { color: #667eea; font-weight: bold; font-size: 1.2em; }
-        table { width: 100%; border-collapse: collapse; margin-bottom: 30px; }
-        th { background: #f5f5f5; padding: 12px; text-align: left; font-weight: 600; color: #333; border-bottom: 2px solid #e0e0e0; }
-        td { padding: 12px; border-bottom: 1px solid #e0e0e0; }
-        tr:hover { background: #f9f9f9; }
-        .rank { font-weight: bold; color: #667eea; width: 40px; }
-        .fun-fact { background: #f0f4ff; border-left: 4px solid #667eea; padding: 15px 20px; margin-bottom: 15px; border-radius: 4px; }
-        .fun-fact strong { color: #667eea; }
-        .empty-state { text-align: center; padding: 60px 20px; color: #aaa; font-size: 1.1em; }
-        .empty-state .icon { font-size: 3em; margin-bottom: 15px; }
-        footer { background: #f5f5f5; padding: 20px; text-align: center; font-size: 0.9em; color: #666; border-top: 1px solid #e0e0e0; }
-        @media (max-width: 768px) { .tab-btn { padding: 12px 10px; font-size: 0.85em; } .content { padding: 20px; } header h1 { font-size: 1.8em; } .metrics { grid-template-columns: 1fr; } }
-        .classificacao-container { padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; color: white; }
-        .cat-selectors { display: flex; flex-direction: column; gap: 12px; margin-bottom: 24px; }
-        .genero-selector, .periodo-selector { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
-        .periodo-selector { border-top: 1px solid rgba(255,255,255,0.2); padding-top: 12px; }
-        .genero-btn, .periodo-btn { padding: 9px 20px; border: 2px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); color: white; border-radius: 25px; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.25s ease; }
-        .genero-btn:hover, .periodo-btn:hover { background: rgba(255,255,255,0.2); border-color: rgba(255,255,255,0.6); transform: translateY(-2px); }
-        .genero-btn.active, .periodo-btn.active { background: rgba(255,255,255,0.3); border-color: white; box-shadow: 0 0 20px rgba(255,255,255,0.35); transform: scale(1.05); }
-        .cat-periodo-label { text-align: center; font-size: 13px; opacity: 0.75; margin-bottom: 4px; letter-spacing: 1px; text-transform: uppercase; }
-        .categorias-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 20px; }
-        .categoria-card { background: rgba(255,255,255,0.98); border-radius: 18px; padding: 0; color: #333; box-shadow: 0 10px 40px rgba(0,0,0,0.15); transition: all 0.3s ease; position: relative; overflow: hidden; display: flex; flex-direction: column; }
-        .categoria-card:hover { transform: translateY(-8px); box-shadow: 0 15px 50px rgba(0,0,0,0.2); }
-        .categoria-card::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: linear-gradient(180deg, var(--color-primary), var(--color-secondary)); }
-        .categoria-header { padding: 28px 25px; text-align: center; background: linear-gradient(135deg, rgba(var(--color-rgb),0.1), rgba(var(--color-rgb),0.05)); border-bottom: 2px solid rgba(var(--color-rgb),0.1); }
-        .categoria-icon { font-size: 60px; line-height: 1; margin-bottom: 10px; display: inline-block; }
-        .categoria-title { margin: 0; font-size: 17px; font-weight: 700; color: var(--color-primary, #667eea); }
-        .categoria-desc { font-size: 12px; color: #999; margin: 5px 0 0 0; font-weight: 500; }
-        .categoria-podio { padding: 18px 22px; flex: 1; display: flex; flex-direction: column; gap: 10px; }
-        .podio-place { display: flex; align-items: center; gap: 12px; padding: 10px 12px; background: linear-gradient(90deg, rgba(var(--color-rgb),0.08), transparent); border-left: 4px solid var(--color-primary); border-radius: 8px; }
-        .podio-medal { font-size: 30px; line-height: 1; min-width: 42px; text-align: center; }
-        .podio-info { flex: 1; min-width: 0; }
-        .podio-name { font-weight: 700; color: var(--color-primary, #333); font-size: 14px; word-break: break-word; margin: 0; }
-        .podio-points { font-size: 12px; color: #666; margin-top: 3px; font-weight: 500; }
-        .podio-empty { padding: 20px; text-align: center; color: #ccc; font-size: 13px; }
-        .categoria-card[data-categoria="general"]     { --color-primary:#FFD700; --color-secondary:#FFA500; --color-rgb:255,215,0; }
-        .categoria-card[data-categoria="kom"]         { --color-primary:#FF6B6B; --color-secondary:#EE5A6F; --color-rgb:255,107,107; }
-        .categoria-card[data-categoria="velocista"]   { --color-primary:#4ECDC4; --color-secondary:#44A5A2; --color-rgb:78,205,196; }
-        .categoria-card[data-categoria="combativo"]   { --color-primary:#F38181; --color-secondary:#D46A6A; --color-rgb:243,129,129; }
-        .categoria-card[data-categoria="novato"]      { --color-primary:#95E1D3; --color-secondary:#78D5C5; --color-rgb:149,225,211; }
-        .categoria-card[data-categoria="ascensao"]    { --color-primary:#A8E6CF; --color-secondary:#8DDCB8; --color-rgb:168,230,207; }
-        .categoria-card[data-categoria="especialista"]{ --color-primary:#FFD3B6; --color-secondary:#FFBC94; --color-rgb:255,211,182; }
-        .categoria-card[data-categoria="versatil"]    { --color-primary:#9A8FDB; --color-secondary:#8374C8; --color-rgb:154,143,219; }
-        @media(max-width:768px){ .categorias-grid{grid-template-columns:1fr;} .categoria-icon{font-size:48px;} .genero-btn,.periodo-btn{flex:1;min-width:80px;text-align:center;padding:8px 12px;font-size:13px;} }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        .tabs {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #e0e0e0;
+            overflow-x: auto;
+            gap: 0;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            padding: 15px 20px;
+            border: none;
+            background: none;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            color: #666;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+        
+        .tab-btn:hover {
+            background: #efefef;
+        }
+        
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+        
+        .content {
+            padding: 40px;
+            min-height: 600px;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .metric {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        
+        .metric .value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .metric .label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .podium {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .podium-item {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        .podium-medal {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        
+        .podium-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        
+        .podium-points {
+            color: #667eea;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        
+        th {
+            background: #f5f5f5;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #333;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        tr:hover {
+            background: #f9f9f9;
+        }
+        
+        .rank {
+            font-weight: bold;
+            color: #667eea;
+            width: 40px;
+        }
+        
+        .fun-fact {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px 20px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        
+        .fun-fact strong {
+            color: #667eea;
+        }
+        
+        footer {
+            background: #f5f5f5;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #666;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        @media (max-width: 768px) {
+            .tabs {
+                gap: 5px;
+            }
+            
+            .tab-btn {
+                padding: 12px 10px;
+                font-size: 0.85em;
+            }
+            
+            .content {
+                padding: 20px;
+            }
+            
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            .metrics {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
 </head>
 <body>
-<div class="container">
-    <header>
-        <h1>🏋️ Work ou #OpentoWork</h1>
-        <p>Dashboard de Ranking e Estatísticas</p>
-    </header>
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab(event,'overview')">📊 Overview</button>
-        <button class="tab-btn" onclick="switchTab(event,'classificacao')">🏅 Categorias</button>
-        <button class="tab-btn" onclick="switchTab(event,'podium')">🏆 Pódio</button>
-        <button class="tab-btn" onclick="switchTab(event,'monthly')">📅 Mensal</button>
-        <button class="tab-btn" onclick="switchTab(event,'weekly')">📈 Semanal</button>
-        <button class="tab-btn" onclick="switchTab(event,'evolution')">📉 Evolução</button>
-        <button class="tab-btn" onclick="switchTab(event,'activities')">💪 Atividades</button>
-        <button class="tab-btn" onclick="switchTab(event,'curiosities')">🎯 Curiosidades</button>
-        <button class="tab-btn" onclick="switchTab(event,'var')">⚠️ VAR</button>
-    </div>
-    <div class="content">
-
-        <div id="overview" class="tab-content active">
-            <h2>📊 Resumo Geral</h2>
-            <div class="metrics">
-    <div class="metric"><div class="value">56</div><div class="label">Check-ins Total</div></div>
-    <div class="metric"><div class="value">460</div><div class="label">Pontos do Grupo</div></div>
-    <div class="metric"><div class="value">44.1h</div><div class="label">Horas de Atividade</div></div>
-    <div class="metric"><div class="value">8/13</div><div class="label">Participantes Ativos</div></div>
-</div>
-            <h3>🏆 Top 3 Geral</h3>
-            <div class="podium"><div class="podium-item"><div class="podium-medal">🥇</div><div class="podium-name">Victor Falcão</div><div class="podium-points">91.8 pts</div><div style="font-size:0.9em;color:#666;margin-top:8px;">8 atividades<br>9.2h</div></div><div class="podium-item"><div class="podium-medal">🥈</div><div class="podium-name">Gleicy Oliveira</div><div class="podium-points">89.6 pts</div><div style="font-size:0.9em;color:#666;margin-top:8px;">10 atividades<br>7.9h</div></div><div class="podium-item"><div class="podium-medal">🥉</div><div class="podium-name">Vinicius Oliveira</div><div class="podium-points">63.8 pts</div><div style="font-size:0.9em;color:#666;margin-top:8px;">9 atividades<br>6.5h</div></div></div>
-            <h3>📊 Ranking Completo</h3>
-            <table><thead><tr><th class="rank">#</th><th>Nome</th><th style="width:100px;">Pontos</th><th style="width:100px;">Atividades</th><th style="width:100px;">Horas</th></tr></thead><tbody><tr><td class="rank">#1</td><td>Victor Falcão</td><td style="color:#667eea;font-weight:bold;">91.8</td><td>8</td><td>9.2h</td></tr><tr><td class="rank">#2</td><td>Gleicy Oliveira</td><td style="color:#667eea;font-weight:bold;">89.6</td><td>10</td><td>7.9h</td></tr><tr><td class="rank">#3</td><td>Vinicius Oliveira</td><td style="color:#667eea;font-weight:bold;">63.8</td><td>9</td><td>6.5h</td></tr><tr><td class="rank">#4</td><td>Thiago santos</td><td style="color:#667eea;font-weight:bold;">61.7</td><td>6</td><td>4.7h</td></tr><tr><td class="rank">#5</td><td>Luiza Cardoso</td><td style="color:#667eea;font-weight:bold;">54.1</td><td>7</td><td>4.8h</td></tr><tr><td class="rank">#6</td><td>Julia Lira</td><td style="color:#667eea;font-weight:bold;">36.1</td><td>7</td><td>4.3h</td></tr><tr><td class="rank">#7</td><td>Fernanda Carvalho</td><td style="color:#667eea;font-weight:bold;">33.9</td><td>5</td><td>4.2h</td></tr><tr><td class="rank">#8</td><td>Caroline Nascimento</td><td style="color:#667eea;font-weight:bold;">28.5</td><td>4</td><td>2.5h</td></tr></tbody></table>
+    <div class="container">
+        <header>
+            <h1>🏋️ Tembici Rats Challenge</h1>
+            <p>Dashboard de Ranking e Estatísticas</p>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab(event, 'podium')">🏆 Pódio</button>
+            <button class="tab-btn" onclick="switchTab(event, 'classificacao')">🏅 Categorias</button>
+            <button class="tab-btn" onclick="switchTab(event, 'monthly')">📅 Mensal</button>
+            <button class="tab-btn" onclick="switchTab(event, 'weekly')">📈 Semanal</button>
+            <button class="tab-btn" onclick="switchTab(event, 'evolution')">📉 Evolução</button>
+            <button class="tab-btn" onclick="switchTab(event, 'activities')">💪 Atividades</button>
+            <button class="tab-btn" onclick="switchTab(event, 'curiosities')">🎯 Curiosidades</button>
+            <button class="tab-btn" onclick="switchTab(event, 'var')">⚠️ VAR</button>
         </div>
+        
+        <div class="content">
+            <!-- ABA 1: PÓDIO -->
+            <div id="podium" class="tab-content active">
+                <style>@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap');#podium *{box-sizing:border-box;margin:0;padding:0}#podium{font-family:'Inter',system-ui,sans-serif;background:#f0f2f8;padding:12px 8px 20px;color:#1a1a2e;overflow:hidden;width:100%}.fh{text-align:center;margin-bottom:14px}.fh h2{font-size:1.5em;font-weight:900;background:linear-gradient(90deg,#4338ca,#7c3aed,#c026d3);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2px}.fh p{color:#888;font-size:.8em}.tc{width:100%;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;align-items:start}.fcol{display:flex;flex-direction:column;gap:7px;min-width:0;overflow:hidden}.fc{background:#fff;border-radius:11px;padding:9px 10px;border:1px solid #e2e8f0;box-shadow:0 1px 4px rgba(0,0,0,.05);position:relative;overflow:hidden;min-width:0}.fc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--c1),var(--c2))}.rank-1{border-color:#fde68a;background:linear-gradient(135deg,#fffbeb 0%,#fff 60%)}.rank-2{border-color:#e2e8f0;background:linear-gradient(135deg,#f8fafc 0%,#fff 60%)}.rank-3{border-color:#fed7aa;background:linear-gradient(135deg,#fff7ed 0%,#fff 60%)}.ft{display:flex;align-items:center;gap:7px;margin-bottom:6px}.frb{font-size:1em;font-weight:900;min-width:24px;text-align:center;color:#94a3b8;flex-shrink:0}.rank-1 .frb{color:#d97706}.rank-2 .frb{color:#64748b}.rank-3 .frb{color:#b45309}.faw{position:relative;flex-shrink:0}.fav{width:34px;height:34px;border-radius:50%;border:2px solid var(--c1);display:flex;align-items:center;justify-content:center;color:white;font-weight:900;font-size:.9em}.feb{position:absolute;bottom:-2px;right:-4px;font-size:11px;line-height:1}.fnb{flex:1;min-width:0;overflow:hidden}.fpn{font-size:.78em;font-weight:800;color:#1e293b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.fnn{font-size:.64em;font-weight:600;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ftp{font-size:.57em;font-weight:700;padding:1px 5px;border-radius:20px;border:1px solid;display:inline-block;margin-top:2px;background:transparent;white-space:nowrap}.fpb{text-align:right;flex-shrink:0;min-width:70px}.fpv{font-size:1em;font-weight:900;line-height:1}.fpl{font-size:.52em;color:#94a3b8;text-transform:uppercase;letter-spacing:.7px}.fpd{font-size:.55em;font-weight:700;margin-top:1px}.fpt{height:3px;background:#f1f5f9;border-radius:3px;overflow:hidden;margin-bottom:6px}.fpf{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--c1),var(--c2))}.fsr{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:4px}.fsp{background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;padding:1px 6px;font-size:.57em;color:#475569;display:flex;align-items:center;gap:2px;white-space:nowrap}.fsp span{color:#1e293b;font-weight:700}.fcb{display:flex;align-items:center;justify-content:space-between;gap:4px}.fvt{font-size:.57em;color:#64748b;font-style:italic;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.gg{font-size:.55em;font-weight:700;padding:2px 6px;border-radius:20px;white-space:nowrap;flex-shrink:0}@media(max-width:900px){.tc{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.tc{grid-template-columns:minmax(0,1fr)}}</style><div class="fh"><h2>🏋️ Tembici Rats — Top 15</h2><p>Ranking atualizado • Semana 4</p></div><div class="tc"><div class="fcol"><div class="fc rank-1" style="--c1:#b8860b;--c2:#f59e0b;"><div class="ft"><div class="frb">🥇</div><div class="faw"><img src="https://cdn.gymrats.app/ea44e431-a1f4-4a2b-b30e-1441611d3f91.jpg" alt="Victor Falcão" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #b8860b;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="fav" style="background:linear-gradient(135deg,#b8860b,#f59e0b);display:none">V</div><div class="feb">🚴</div></div><div class="fnb"><div class="fpn">Victor Falcão</div><div class="fnn" style="color:#b8860b">O Maratonista</div><div class="ftp" style="color:#b8860b;border-color:#b8860b40">⏱️ Mais horas</div></div><div class="fpb"><div class="fpv" style="color:#b8860b">377.9</div><div class="fpl">pontos</div><div class="fpd" style="color:#b8860b">+16.3 esta sem.</div></div></div><div class="fpt"><div class="fpf" style="width:100.0%"></div></div><div class="fsr"><div class="fsp">🏃 <span>31</span> treinos</div><div class="fsp">⏱️ <span>36h</span> ativas</div><div class="fsp">🎯 <span>Outro</span></div></div><div class="fcb"><div class="fvt">"226h de atividade. Trabalha ou só pedala? Sim."</div><div class="gg" style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0">🏆 Líder absoluto!</div></div></div><div class="fc rank-2" style="--c1:#4338ca;--c2:#667eea;"><div class="ft"><div class="frb">🥈</div><div class="faw"><img src="https://cdn.gymrats.app/49564d5c-df8b-42fb-8390-2b34365db65c.jpg" alt="Gleicy Oliveira" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #4338ca;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="fav" style="background:linear-gradient(135deg,#4338ca,#667eea);display:none">G</div><div class="feb">⭐</div></div><div class="fnb"><div class="fpn">Gleicy Oliveira</div><div class="fnn" style="color:#4338ca">Gleicy Oliveira</div><div class="ftp" style="color:#4338ca;border-color:#4338ca40">🏃 Atleta</div></div><div class="fpb"><div class="fpv" style="color:#4338ca">344.6</div><div class="fpl">pontos</div><div class="fpd" style="color:#4338ca">+7.8 esta sem.</div></div></div><div class="fpt"><div class="fpf" style="width:91.2%"></div></div><div class="fsr"><div class="fsp">🏃 <span>36</span> treinos</div><div class="fsp">⏱️ <span>31h</span> ativas</div><div class="fsp">🎯 <span>Outro</span></div></div><div class="fcb"><div class="fvt">"Treinando firme!"</div><div class="gg" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a">⚡ 33 pts do #1</div></div></div><div class="fc rank-3" style="--c1:#c2410c;--c2:#fb923c;"><div class="ft"><div class="frb">🥉</div><div class="faw"><img src="https://media.gymrats.app/7b8db62d-32e5-4ec9-83b8-d432095c6ae0.jpg" alt="Vinicius Oliveira" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #c2410c;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="fav" style="background:linear-gradient(135deg,#c2410c,#fb923c);display:none">V</div><div class="feb">⭐</div></div><div class="fnb"><div class="fpn">Vinicius Oliveira</div><div class="fnn" style="color:#c2410c">Vinicius Oliveira</div><div class="ftp" style="color:#c2410c;border-color:#c2410c40">🏃 Atleta</div></div><div class="fpb"><div class="fpv" style="color:#c2410c">317.7</div><div class="fpl">pontos</div><div class="fpd" style="color:#c2410c">+21.5 esta sem.</div></div></div><div class="fpt"><div class="fpf" style="width:84.1%"></div></div><div class="fsr"><div class="fsp">🏃 <span>37</span> treinos</div><div class="fsp">⏱️ <span>30h</span> ativas</div><div class="fsp">🎯 <span>Outro</span></div></div><div class="fcb"><div class="fvt">"Treinando firme!"</div><div class="gg" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a">⚡ 27 pts do #2</div></div></div><div class="fc rank-4" style="--c1:#047857;--c2:#34d399;"><div class="ft"><div class="frb">#4</div><div class="faw"><img src="https://cdn.gymrats.app/c7b0a680-2ba6-403f-8195-4c4501d3475c.jpg" alt="Fernanda Carvalho" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #047857;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="fav" style="background:linear-gradient(135deg,#047857,#34d399);display:none">F</div><div class="feb">⭐</div></div><div class="fnb"><div class="fpn">Fernanda Carvalho</div><div class="fnn" style="color:#047857">Fernanda Carvalho</div><div class="ftp" style="color:#047857;border-color:#04785740">🏃 Atleta</div></div><div class="fpb"><div class="fpv" style="color:#047857">286.8</div><div class="fpl">pontos</div><div class="fpd" style="color:#047857">+0.0 esta sem.</div></div></div><div class="fpt"><div class="fpf" style="width:75.9%"></div></div><div class="fsr"><div class="fsp">🏃 <span>28</span> treinos</div><div class="fsp">⏱️ <span>24h</span> ativas</div><div class="fsp">🎯 <span>Outro</span></div></div><div class="fcb"><div class="fvt">"Treinando firme!"</div><div class="gg" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a">⚡ 31 pts do #3</div></div></div><div class="fc rank-5" style="--c1:#6d28d9;--c2:#a78bfa;"><div class="ft"><div class="frb">#5</div><div class="faw"><img src="https://cdn.gymrats.app/702b2c03-b030-42bf-8a0b-aae23143dd51.jpg" alt="Luiza Cardoso" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #6d28d9;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="fav" style="background:linear-gradient(135deg,#6d28d9,#a78bfa);display:none">L</div><div class="feb">⭐</div></div><div class="fnb"><div class="fpn">Luiza Cardoso</div><div class="fnn" style="color:#6d28d9">Luiza Cardoso</div><div class="ftp" style="color:#6d28d9;border-color:#6d28d940">🏃 Atleta</div></div><div class="fpb"><div class="fpv" style="color:#6d28d9">242.0</div><div class="fpl">pontos</div><div class="fpd" style="color:#6d28d9">+21.5 esta sem.</div></div></div><div class="fpt"><div class="fpf" style="width:64.0%"></div></div><div class="fsr"><div class="fsp">🏃 <span>24</span> treinos</div><div class="fsp">⏱️ <span>21h</span> ativas</div><div class="fsp">🎯 <span>Outro</span></div></div><div class="fcb"><div class="fvt">"Treinando firme!"</div><div class="gg" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a">⚡ 45 pts do #4</div></div></div></div><div class="fcol"><div class="fc rank-6" style="--c1:#b91c1c;--c2:#f87171;"><div class="ft"><div class="frb">#6</div><div class="faw"><img src="https://cdn.gymrats.app/79453483-e8bc-432f-98db-f04d5b73fe54.jpg" alt="Julia Lira" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #b91c1c;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="fav" style="background:linear-gradient(135deg,#b91c1c,#f87171);display:none">J</div><div class="feb">⭐</div></div><div class="fnb"><div class="fpn">Julia Lira</div><div class="fnn" style="color:#b91c1c">Julia Lira</div><div class="ftp" style="color:#b91c1c;border-color:#b91c1c40">🏃 Atleta</div></div><div class="fpb"><div class="fpv" style="color:#b91c1c">189.0</div><div class="fpl">pontos</div><div class="fpd" style="color:#b91c1c">+19.1 esta sem.</div></div></div><div class="fpt"><div class="fpf" style="width:50.0%"></div></div><div class="fsr"><div class="fsp">🏃 <span>31</span> treinos</div><div class="fsp">⏱️ <span>19h</span> ativas</div><div class="fsp">🎯 <span>Outro</span></div></div><div class="fcb"><div class="fvt">"Treinando firme!"</div><div class="gg" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a">⚡ 53 pts do #5</div></div></div><div class="fc rank-7" style="--c1:#92400e;--c2:#fbbf24;"><div class="ft"><div class="frb">#7</div><div class="faw"><img src="https://cdn.gymrats.app/ccaf1f23-f1b5-44b0-986d-d08f1eed20be.jpg" alt="Thiago santos" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #92400e;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="fav" style="background:linear-gradient(135deg,#92400e,#fbbf24);display:none">T</div><div class="feb">⭐</div></div><div class="fnb"><div class="fpn">Thiago santos</div><div class="fnn" style="color:#92400e">Thiago santos</div><div class="ftp" style="color:#92400e;border-color:#92400e40">🏃 Atleta</div></div><div class="fpb"><div class="fpv" style="color:#92400e">150.6</div><div class="fpl">pontos</div><div class="fpd" style="color:#92400e">+0.0 esta sem.</div></div></div><div class="fpt"><div class="fpf" style="width:39.8%"></div></div><div class="fsr"><div class="fsp">🏃 <span>14</span> treinos</div><div class="fsp">⏱️ <span>12h</span> ativas</div><div class="fsp">🎯 <span>Outro</span></div></div><div class="fcb"><div class="fvt">"Treinando firme!"</div><div class="gg" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a">⚡ 38 pts do #6</div></div></div><div class="fc rank-8" style="--c1:#0369a1;--c2:#38bdf8;"><div class="ft"><div class="frb">#8</div><div class="faw"><img src="https://cdn.gymrats.app/bacbdf36-8b18-4a45-9f6f-c58ccc90eafa.jpg" alt="Emerson Souza" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #0369a1;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="fav" style="background:linear-gradient(135deg,#0369a1,#38bdf8);display:none">E</div><div class="feb">⭐</div></div><div class="fnb"><div class="fpn">Emerson Souza</div><div class="fnn" style="color:#0369a1">Emerson Souza</div><div class="ftp" style="color:#0369a1;border-color:#0369a140">🏃 Atleta</div></div><div class="fpb"><div class="fpv" style="color:#0369a1">102.1</div><div class="fpl">pontos</div><div class="fpd" style="color:#0369a1">+0.0 esta sem.</div></div></div><div class="fpt"><div class="fpf" style="width:27.0%"></div></div><div class="fsr"><div class="fsp">🏃 <span>6</span> treinos</div><div class="fsp">⏱️ <span>9h</span> ativas</div><div class="fsp">🎯 <span>Outro</span></div></div><div class="fcb"><div class="fvt">"Treinando firme!"</div><div class="gg" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a">⚡ 48 pts do #7</div></div></div><div class="fc rank-9" style="--c1:#15803d;--c2:#4ade80;"><div class="ft"><div class="frb">#9</div><div class="faw"><div class="fav" style="background:linear-gradient(135deg,#15803d,#4ade80)">C</div><div class="feb">🎨</div></div><div class="fnb"><div class="fpn">Caroline Nascimento</div><div class="fnn" style="color:#15803d">A Versátil</div><div class="ftp" style="color:#15803d;border-color:#15803d40">🔄 Multi-esportes</div></div><div class="fpb"><div class="fpv" style="color:#15803d">76.9</div><div class="fpl">pontos</div><div class="fpd" style="color:#15803d">+0.0 esta sem.</div></div></div><div class="fpt"><div class="fpf" style="width:20.3%"></div></div><div class="fsr"><div class="fsp">🏃 <span>12</span> treinos</div><div class="fsp">⏱️ <span>7h</span> ativas</div><div class="fsp">🎯 <span>Outro</span></div></div><div class="fcb"><div class="fvt">"O maior arsenal de tipos de treino do grupo."</div><div class="gg" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a">⚡ 25 pts do #8</div></div></div><div class="fc rank-10" style="--c1:#86198f;--c2:#e879f9;"><div class="ft"><div class="frb">#10</div><div class="faw"><img src="https://cdn.gymrats.app/98fd373a-315d-4106-8e45-7ba84dd7a459.jpg" alt="Eloise Tripodi" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #86198f;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="fav" style="background:linear-gradient(135deg,#86198f,#e879f9);display:none">E</div><div class="feb">⭐</div></div><div class="fnb"><div class="fpn">Eloise Tripodi</div><div class="fnn" style="color:#86198f">Eloise Tripodi</div><div class="ftp" style="color:#86198f;border-color:#86198f40">🏃 Atleta</div></div><div class="fpb"><div class="fpv" style="color:#86198f">40.8</div><div class="fpl">pontos</div><div class="fpd" style="color:#86198f">+0.0 esta sem.</div></div></div><div class="fpt"><div class="fpf" style="width:10.8%"></div></div><div class="fsr"><div class="fsp">🏃 <span>4</span> treinos</div><div class="fsp">⏱️ <span>3h</span> ativas</div><div class="fsp">🎯 <span>Outro</span></div></div><div class="fcb"><div class="fvt">"Treinando firme!"</div><div class="gg" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a">⚡ 36 pts do #9</div></div></div></div><div class="fcol"><div class="fc rank-11" style="--c1:#0f766e;--c2:#2dd4bf;"><div class="ft"><div class="frb">#11</div><div class="faw"><div class="fav" style="background:linear-gradient(135deg,#0f766e,#2dd4bf)">P</div><div class="feb">⭐</div></div><div class="fnb"><div class="fpn">Paloma Silva</div><div class="fnn" style="color:#0f766e">Paloma Silva</div><div class="ftp" style="color:#0f766e;border-color:#0f766e40">🏃 Atleta</div></div><div class="fpb"><div class="fpv" style="color:#0f766e">35.7</div><div class="fpl">pontos</div><div class="fpd" style="color:#0f766e">+0.0 esta sem.</div></div></div><div class="fpt"><div class="fpf" style="width:9.4%"></div></div><div class="fsr"><div class="fsp">🏃 <span>7</span> treinos</div><div class="fsp">⏱️ <span>5h</span> ativas</div><div class="fsp">🎯 <span>Outro</span></div></div><div class="fcb"><div class="fvt">"Treinando firme!"</div><div class="gg" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca">🔥 Só 5 pts do #10!</div></div></div><div class="fc rank-12" style="--c1:#7c3aed;--c2:#c4b5fd;"><div class="ft"><div class="frb">#12</div><div class="faw"><img src="https://cdn.gymrats.app/4a6da588-afa4-4133-b54a-f4c9535bd02c.jpg" alt="Emerson Soares" style="width:34px;height:34px;border-radius:50%;object-fit:cover;border:2px solid #7c3aed;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><div class="fav" style="background:linear-gradient(135deg,#7c3aed,#c4b5fd);display:none">E</div><div class="feb">⭐</div></div><div class="fnb"><div class="fpn">Emerson Soares</div><div class="fnn" style="color:#7c3aed">Emerson Soares</div><div class="ftp" style="color:#7c3aed;border-color:#7c3aed40">🏃 Atleta</div></div><div class="fpb"><div class="fpv" style="color:#7c3aed">6.5</div><div class="fpl">pontos</div><div class="fpd" style="color:#7c3aed">+0.0 esta sem.</div></div></div><div class="fpt"><div class="fpf" style="width:1.7%"></div></div><div class="fsr"><div class="fsp">🏃 <span>1</span> treinos</div><div class="fsp">⏱️ <span>1h</span> ativas</div><div class="fsp">🎯 <span>Outro</span></div></div><div class="fcb"><div class="fvt">"Treinando firme!"</div><div class="gg" style="background:#fffbeb;color:#d97706;border:1px solid #fde68a">⚡ 29 pts do #11</div></div></div><div class="fc rank-13" style="--c1:#be185d;--c2:#f9a8d4;"><div class="ft"><div class="frb">#13</div><div class="faw"><div class="fav" style="background:linear-gradient(135deg,#be185d,#f9a8d4)">S</div><div class="feb">⭐</div></div><div class="fnb"><div class="fpn">Sabrina</div><div class="fnn" style="color:#be185d">Sabrina</div><div class="ftp" style="color:#be185d;border-color:#be185d40">🏃 Atleta</div></div><div class="fpb"><div class="fpv" style="color:#be185d">4.1</div><div class="fpl">pontos</div><div class="fpd" style="color:#be185d">+0.0 esta sem.</div></div></div><div class="fpt"><div class="fpf" style="width:1.1%"></div></div><div class="fsr"><div class="fsp">🏃 <span>1</span> treinos</div><div class="fsp">⏱️ <span>1h</span> ativas</div><div class="fsp">🎯 <span>Outro</span></div></div><div class="fcb"><div class="fvt">"Treinando firme!"</div><div class="gg" style="background:#fef2f2;color:#dc2626;border:1px solid #fecaca">🔥 Só 2 pts do #12!</div></div></div></div></div>
+            </div>
+            
+            <!-- ABA 3: MENSAL -->
+            <div id="monthly" class="tab-content">
+                <h2>📅 Ranking por Mês</h2>
+                
+        <h3>June de 2026 (Em andamento)</h3>
+        <table style="margin-bottom: 30px;">
+            <thead>
+                <tr>
+                    <th class="rank">#</th>
+                    <th>Nome</th>
+                    <th style="width: 100px;">Pts(Mês)</th>
+                    <th style="width: 100px;">Ativ(Mês)</th>
+                    <th style="width: 120px;">Pts(Acum até Mês)</th>
+                </tr>
+            </thead>
+            <tbody>
+        
 
-        <div id="classificacao" class="tab-content">
-            <div class="classificacao-container">
-                <div class="cat-selectors">
-                    <div class="cat-periodo-label">Gênero</div>
-                    <div class="genero-selector">
-                        <button class="genero-btn active" data-genero="geral">🌍 Geral</button>
-                        <button class="genero-btn" data-genero="masculino">👨 Homens</button>
-                        <button class="genero-btn" data-genero="feminino">👩 Mulheres</button>
-                    </div>
-                    <div class="cat-periodo-label">Período</div>
-                    <div class="periodo-selector">
-                        <button class="periodo-btn active" data-periodo="ytd">📊 YTD</button>
-                    </div>
-                </div>
-                <div id="categorias-grid" class="categorias-grid"></div>
+                <tr>
+                    <td class="rank">#1</td>
+                    <td>Victor Falcão</td>
+                    <td style="color: #667eea; font-weight: bold;">377.9</td>
+                    <td>31</td>
+                    <td style="font-weight: bold;">377.9</td>
+                </tr>
+            
+
+                <tr>
+                    <td class="rank">#2</td>
+                    <td>Gleicy Oliveira</td>
+                    <td style="color: #667eea; font-weight: bold;">344.6</td>
+                    <td>36</td>
+                    <td style="font-weight: bold;">344.6</td>
+                </tr>
+            
+
+                <tr>
+                    <td class="rank">#3</td>
+                    <td>Vinicius Oliveira</td>
+                    <td style="color: #667eea; font-weight: bold;">317.7</td>
+                    <td>37</td>
+                    <td style="font-weight: bold;">317.7</td>
+                </tr>
+            
+
+                <tr>
+                    <td class="rank">#4</td>
+                    <td>Fernanda Carvalho</td>
+                    <td style="color: #667eea; font-weight: bold;">286.8</td>
+                    <td>28</td>
+                    <td style="font-weight: bold;">286.8</td>
+                </tr>
+            
+
+                <tr>
+                    <td class="rank">#5</td>
+                    <td>Luiza Cardoso</td>
+                    <td style="color: #667eea; font-weight: bold;">242.0</td>
+                    <td>24</td>
+                    <td style="font-weight: bold;">242.0</td>
+                </tr>
+            
+
+                <tr>
+                    <td class="rank">#6</td>
+                    <td>Julia Lira</td>
+                    <td style="color: #667eea; font-weight: bold;">189.0</td>
+                    <td>31</td>
+                    <td style="font-weight: bold;">189.0</td>
+                </tr>
+            
+
+                <tr>
+                    <td class="rank">#7</td>
+                    <td>Thiago santos</td>
+                    <td style="color: #667eea; font-weight: bold;">150.6</td>
+                    <td>14</td>
+                    <td style="font-weight: bold;">150.6</td>
+                </tr>
+            
+
+                <tr>
+                    <td class="rank">#8</td>
+                    <td>Emerson Souza</td>
+                    <td style="color: #667eea; font-weight: bold;">102.1</td>
+                    <td>6</td>
+                    <td style="font-weight: bold;">102.1</td>
+                </tr>
+            
+
+                <tr>
+                    <td class="rank">#9</td>
+                    <td>Caroline Nascimento</td>
+                    <td style="color: #667eea; font-weight: bold;">76.9</td>
+                    <td>12</td>
+                    <td style="font-weight: bold;">76.9</td>
+                </tr>
+            
+
+                <tr>
+                    <td class="rank">#10</td>
+                    <td>Eloise Tripodi</td>
+                    <td style="color: #667eea; font-weight: bold;">40.8</td>
+                    <td>4</td>
+                    <td style="font-weight: bold;">40.8</td>
+                </tr>
+            
+</tbody></table>
+            </div>
+            
+            <!-- ABA 4: SEMANAL -->
+            <div id="weekly" class="tab-content">
+                <h2>📈 Ranking por Semana</h2>
+                
+        <h3>Semana 1 (07/06 - 13/06)</h3>
+        <table style="margin-bottom: 30px;">
+            <thead>
+                <tr>
+                    <th class="rank">#</th>
+                    <th>Nome</th>
+                    <th style="width: 90px;">Pts(Sem)</th>
+                    <th style="width: 90px;">Ativ(Sem)</th>
+                    <th style="width: 120px;">Pts(Acum até Sem 1)</th>
+                </tr>
+            </thead>
+            <tbody>
+        
+
+                    <tr>
+                        <td class="rank">#1</td>
+                        <td>Victor Falcão</td>
+                        <td style="color: #667eea; font-weight: bold;">78.9</td>
+                        <td>6</td>
+                        <td style="font-weight: bold;">78.9</td>
+                    </tr>
+                
+
+                    <tr>
+                        <td class="rank">#2</td>
+                        <td>Gleicy Oliveira</td>
+                        <td style="color: #667eea; font-weight: bold;">70.9</td>
+                        <td>8</td>
+                        <td style="font-weight: bold;">70.9</td>
+                    </tr>
+                
+
+                    <tr>
+                        <td class="rank">#3</td>
+                        <td>Thiago santos</td>
+                        <td style="color: #667eea; font-weight: bold;">61.7</td>
+                        <td>6</td>
+                        <td style="font-weight: bold;">61.7</td>
+                    </tr>
+                
+
+                    <tr>
+                        <td class="rank">#4</td>
+                        <td>Luiza Cardoso</td>
+                        <td style="color: #667eea; font-weight: bold;">54.1</td>
+                        <td>7</td>
+                        <td style="font-weight: bold;">54.1</td>
+                    </tr>
+                
+
+                    <tr>
+                        <td class="rank">#5</td>
+                        <td>Vinicius Oliveira</td>
+                        <td style="color: #667eea; font-weight: bold;">50.8</td>
+                        <td>8</td>
+                        <td style="font-weight: bold;">50.8</td>
+                    </tr>
+                
+</tbody></table>
+
+        <h3>Semana 2 (14/06 - 20/06)</h3>
+        <table style="margin-bottom: 30px;">
+            <thead>
+                <tr>
+                    <th class="rank">#</th>
+                    <th>Nome</th>
+                    <th style="width: 90px;">Pts(Sem)</th>
+                    <th style="width: 90px;">Ativ(Sem)</th>
+                    <th style="width: 120px;">Pts(Acum até Sem 2)</th>
+                </tr>
+            </thead>
+            <tbody>
+        
+
+                    <tr>
+                        <td class="rank">#1</td>
+                        <td>Gleicy Oliveira</td>
+                        <td style="color: #667eea; font-weight: bold;">165.7</td>
+                        <td>15</td>
+                        <td style="font-weight: bold;">236.6</td>
+                    </tr>
+                
+
+                    <tr>
+                        <td class="rank">#2</td>
+                        <td>Victor Falcão</td>
+                        <td style="color: #667eea; font-weight: bold;">146.1</td>
+                        <td>11</td>
+                        <td style="font-weight: bold;">224.9</td>
+                    </tr>
+                
+
+                    <tr>
+                        <td class="rank">#3</td>
+                        <td>Vinicius Oliveira</td>
+                        <td style="color: #667eea; font-weight: bold;">137.5</td>
+                        <td>16</td>
+                        <td style="font-weight: bold;">188.3</td>
+                    </tr>
+                
+
+                    <tr>
+                        <td class="rank">#4</td>
+                        <td>Fernanda Carvalho</td>
+                        <td style="color: #667eea; font-weight: bold;">135.1</td>
+                        <td>11</td>
+                        <td style="font-weight: bold;">175.2</td>
+                    </tr>
+                
+
+                    <tr>
+                        <td class="rank">#5</td>
+                        <td>Thiago santos</td>
+                        <td style="color: #667eea; font-weight: bold;">88.9</td>
+                        <td>8</td>
+                        <td style="font-weight: bold;">150.6</td>
+                    </tr>
+                
+</tbody></table>
+
+        <h3>Semana 3 (21/06 - 27/06)</h3>
+        <table style="margin-bottom: 30px;">
+            <thead>
+                <tr>
+                    <th class="rank">#</th>
+                    <th>Nome</th>
+                    <th style="width: 90px;">Pts(Sem)</th>
+                    <th style="width: 90px;">Ativ(Sem)</th>
+                    <th style="width: 120px;">Pts(Acum até Sem 3)</th>
+                </tr>
+            </thead>
+            <tbody>
+        
+
+                    <tr>
+                        <td class="rank">#1</td>
+                        <td>Victor Falcão</td>
+                        <td style="color: #667eea; font-weight: bold;">136.7</td>
+                        <td>12</td>
+                        <td style="font-weight: bold;">361.6</td>
+                    </tr>
+                
+
+                    <tr>
+                        <td class="rank">#2</td>
+                        <td>Fernanda Carvalho</td>
+                        <td style="color: #667eea; font-weight: bold;">111.7</td>
+                        <td>12</td>
+                        <td style="font-weight: bold;">286.8</td>
+                    </tr>
+                
+
+                    <tr>
+                        <td class="rank">#3</td>
+                        <td>Vinicius Oliveira</td>
+                        <td style="color: #667eea; font-weight: bold;">107.9</td>
+                        <td>11</td>
+                        <td style="font-weight: bold;">296.2</td>
+                    </tr>
+                
+
+                    <tr>
+                        <td class="rank">#4</td>
+                        <td>Gleicy Oliveira</td>
+                        <td style="color: #667eea; font-weight: bold;">100.2</td>
+                        <td>12</td>
+                        <td style="font-weight: bold;">336.8</td>
+                    </tr>
+                
+
+                    <tr>
+                        <td class="rank">#5</td>
+                        <td>Luiza Cardoso</td>
+                        <td style="color: #667eea; font-weight: bold;">86.5</td>
+                        <td>7</td>
+                        <td style="font-weight: bold;">220.5</td>
+                    </tr>
+                
+</tbody></table>
+
+        <h3>Semana 4 (28/06 - 04/07) (Em andamento)</h3>
+        <table style="margin-bottom: 30px;">
+            <thead>
+                <tr>
+                    <th class="rank">#</th>
+                    <th>Nome</th>
+                    <th style="width: 90px;">Pts(Sem)</th>
+                    <th style="width: 90px;">Ativ(Sem)</th>
+                    <th style="width: 120px;">Pts(Acum até Sem 4)</th>
+                </tr>
+            </thead>
+            <tbody>
+        
+
+                <tr>
+                    <td colspan="5" style="text-align: center; color: #999; padding: 20px;">
+                        📊 Dados desta semana serão atualizados no próximo domingo
+                    </td>
+                </tr>
+            
+</tbody></table>
+            </div>
+            
+            <!-- ABA 5: EVOLUÇÃO -->
+            <div id="evolution" class="tab-content">
+                <h2>📉 Evolução de Ranking (Posição por Semana)</h2>
+                <p style="font-size: 0.9em; color: #666;">Gráfico mostrando a evolução do ranking dos Top 10 competidores ao longo das semanas</p>
+                <style>#race-wrap{background:#0f0f1a;border-radius:12px;padding:20px 24px;margin-top:8px;color:white;font-family:Segoe UI,system-ui,sans-serif}#race-svg-container{width:100%;overflow:hidden}#race-controls{display:flex;align-items:center;gap:12px;margin-top:14px;flex-wrap:wrap}#race-week-label{font-size:1.8em;font-weight:900;color:#a78bfa;min-width:120px;text-align:right;margin-left:auto}.race-btn{padding:8px 20px;border:none;border-radius:25px;font-size:.85em;font-weight:700;cursor:pointer;transition:all .2s}#btn-play{background:linear-gradient(90deg,#667eea,#764ba2);color:white;box-shadow:0 4px 14px rgba(102,126,234,.4)}#btn-play:hover{transform:scale(1.05)}#btn-restart{background:rgba(255,255,255,.1);color:#ccc;border:1px solid rgba(255,255,255,.2)}#btn-restart:hover{background:rgba(255,255,255,.2)}.speed-btn{background:rgba(255,255,255,.08);color:#aaa;border:1px solid rgba(255,255,255,.15);padding:6px 12px;border-radius:20px;font-size:.78em;font-weight:600;cursor:pointer}.speed-btn.active{background:#764ba2;color:white;border-color:#764ba2}#race-progress{flex:1;height:4px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}#race-progress-fill{height:100%;background:linear-gradient(90deg,#667eea,#a78bfa);border-radius:2px;transition:width .1s}</style><div id="race-wrap"><div style="display:flex;align-items:baseline;gap:10px;margin-bottom:16px"><h3 style="font-size:1.1em;font-weight:800;background:linear-gradient(90deg,#667eea,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent">&#x1F4C9; Evolução &mdash; Bar Chart Race</h3><span style="font-size:.78em;color:#666">Top 10 &middot; pontos acumulados por semana</span></div><div id="race-svg-container"></div><div id="race-controls"><button class="race-btn" id="btn-play">&#x25B6; Play</button><button class="race-btn" id="btn-restart">&#x21BA; Reiniciar</button><div style="display:flex;gap:6px;align-items:center"><span style="font-size:.75em;color:#888">Velocidade:</span><button class="speed-btn" data-speed="2000">0.5&#xD7;</button><button class="speed-btn active" data-speed="1000">1&#xD7;</button><button class="speed-btn" data-speed="500">2&#xD7;</button><button class="speed-btn" data-speed="250">4&#xD7;</button></div><div id="race-progress"><div id="race-progress-fill" style="width:0%"></div></div><div id="race-week-label">Semana 1</div></div></div><script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script><script>
+(function(){
+var FRAMES=[[{"name": "Victor Falcão", "value": 78.9, "color": "#FF6384"}, {"name": "Gleicy Oliveira", "value": 70.9, "color": "#36A2EB"}, {"name": "Thiago santos", "value": 61.7, "color": "#71B37C"}, {"name": "Luiza Cardoso", "value": 54.1, "color": "#9966FF"}, {"name": "Vinicius Oliveira", "value": 50.8, "color": "#FFCE56"}, {"name": "Fernanda Carvalho", "value": 40.1, "color": "#4BC0C0"}, {"name": "Caroline Nascimento", "value": 28.5, "color": "#46BFBD"}, {"name": "Julia Lira", "value": 26.3, "color": "#FF9F40"}, {"name": "Emerson Souza", "value": 0, "color": "#F7464A"}, {"name": "Eloise Tripodi", "value": 0, "color": "#c026d3"}], [{"name": "Gleicy Oliveira", "value": 236.6, "color": "#36A2EB"}, {"name": "Victor Falcão", "value": 224.9, "color": "#FF6384"}, {"name": "Vinicius Oliveira", "value": 188.3, "color": "#FFCE56"}, {"name": "Fernanda Carvalho", "value": 175.2, "color": "#4BC0C0"}, {"name": "Thiago santos", "value": 150.6, "color": "#71B37C"}, {"name": "Luiza Cardoso", "value": 134.0, "color": "#9966FF"}, {"name": "Julia Lira", "value": 98.1, "color": "#FF9F40"}, {"name": "Caroline Nascimento", "value": 66.2, "color": "#46BFBD"}, {"name": "Eloise Tripodi", "value": 40.8, "color": "#c026d3"}, {"name": "Emerson Souza", "value": 30.0, "color": "#F7464A"}], [{"name": "Victor Falcão", "value": 361.6, "color": "#FF6384"}, {"name": "Gleicy Oliveira", "value": 336.8, "color": "#36A2EB"}, {"name": "Vinicius Oliveira", "value": 296.2, "color": "#FFCE56"}, {"name": "Fernanda Carvalho", "value": 286.8, "color": "#4BC0C0"}, {"name": "Luiza Cardoso", "value": 220.5, "color": "#9966FF"}, {"name": "Julia Lira", "value": 170.0, "color": "#FF9F40"}, {"name": "Thiago santos", "value": 150.6, "color": "#71B37C"}, {"name": "Emerson Souza", "value": 102.1, "color": "#F7464A"}, {"name": "Caroline Nascimento", "value": 76.9, "color": "#46BFBD"}, {"name": "Eloise Tripodi", "value": 40.8, "color": "#c026d3"}], [{"name": "Victor Falcão", "value": 377.9, "color": "#FF6384"}, {"name": "Gleicy Oliveira", "value": 344.6, "color": "#36A2EB"}, {"name": "Vinicius Oliveira", "value": 317.7, "color": "#FFCE56"}, {"name": "Fernanda Carvalho", "value": 286.8, "color": "#4BC0C0"}, {"name": "Luiza Cardoso", "value": 242.0, "color": "#9966FF"}, {"name": "Julia Lira", "value": 189.0, "color": "#FF9F40"}, {"name": "Thiago santos", "value": 150.6, "color": "#71B37C"}, {"name": "Emerson Souza", "value": 102.1, "color": "#F7464A"}, {"name": "Caroline Nascimento", "value": 76.9, "color": "#46BFBD"}, {"name": "Eloise Tripodi", "value": 40.8, "color": "#c026d3"}]];
+var WEEK_LABELS=["Semana 1", "Semana 2", "Semana 3", "Semana 4"];
+var BAR_H=36, BAR_GAP=7, MARGIN={top:8,right:160,bottom:32,left:8};
+var N=10;
+var totalH=N*(BAR_H+BAR_GAP)+MARGIN.top+MARGIN.bottom;
+var container=document.getElementById("race-svg-container");
+var W=container.clientWidth||800;
+var innerW=W-MARGIN.left-MARGIN.right;
+
+var svg=d3.select("#race-svg-container").append("svg")
+  .attr("width","100%").attr("height",totalH)
+  .attr("viewBox","0 0 "+W+" "+totalH);
+var g=svg.append("g").attr("transform","translate("+MARGIN.left+","+MARGIN.top+")");
+var xAxisG=g.append("g").attr("class","x-axis").attr("transform","translate(0,"+(N*(BAR_H+BAR_GAP))+")");
+var xScale=d3.scaleLinear().range([0,innerW]);
+
+var frameIdx=0, playing=false, timer=null, speed=1000;
+
+function maxVal(frame){return d3.max(frame,function(d){return d.value;})||1;}
+
+function draw(frame,instant){
+  var mx=maxVal(frame);
+  xScale.domain([0,mx*1.08]);
+  var dur=instant?0:speed*0.85;
+
+  var bars=g.selectAll(".race-bar").data(frame,function(d){return d.name;});
+  var entered=bars.enter().append("g").attr("class","race-bar");
+  entered.append("rect").attr("height",BAR_H).attr("rx",6);
+  entered.append("text").attr("class","bar-label");
+  entered.append("text").attr("class","val-label");
+  var all=entered.merge(bars);
+
+  all.transition().duration(dur).ease(d3.easeLinear)
+    .attr("transform",function(d,i){return "translate(0,"+(i*(BAR_H+BAR_GAP))+")";});
+
+  all.select("rect").transition().duration(dur).ease(d3.easeLinear)
+    .attr("width",function(d){return Math.max(xScale(d.value),4);})
+    .attr("fill",function(d){return d.color;});
+
+  all.select(".bar-label")
+    .attr("y",BAR_H/2+5).attr("font-size","12").attr("font-weight","700").attr("fill","white")
+    .transition().duration(dur).ease(d3.easeLinear)
+    .attr("x",function(d){return Math.max(xScale(d.value),4)+6;})
+    .attr("fill",function(d){return d.color;})
+    .text(function(d){return d.name;});
+
+  all.select(".val-label")
+    .attr("y",BAR_H/2+5).attr("font-size","11").attr("fill","rgba(255,255,255,.65)")
+    .transition().duration(dur).ease(d3.easeLinear)
+    .attr("x",function(d){return Math.max(xScale(d.value)-6,2);})
+    .attr("text-anchor","end")
+    .text(function(d){
+      if(d.value<=0)return "";
+      return d.value.toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
+    });
+
+  xAxisG.transition().duration(dur).call(
+    d3.axisBottom(xScale).ticks(5).tickFormat(function(v){return v+" pts";})
+  ).selectAll("text").attr("fill","#888").attr("font-size","11");
+  xAxisG.selectAll("line,path").attr("stroke","rgba(255,255,255,.1)");
+
+  all.each(function(d,i){
+    var el=d3.select(this);
+    el.select(".medal").remove();
+    var rank=i;  // índice 0 = 1º lugar (maior valor)
+    if(rank<3){
+      el.append("text").attr("class","medal")
+        .attr("x",innerW+22).attr("y",BAR_H/2+7)
+        .attr("font-size","20").attr("text-anchor","middle")
+        .text(["🥇","🥈","🥉"][rank]);
+    }
+  });
+}
+
+function updateUI(){
+  document.getElementById("race-week-label").textContent=WEEK_LABELS[frameIdx]||"";
+  var pct=FRAMES.length>1?(frameIdx/(FRAMES.length-1)*100).toFixed(1):100;
+  document.getElementById("race-progress-fill").style.width=pct+"%";
+}
+
+function step(){
+  draw(FRAMES[frameIdx],false);
+  updateUI();
+  frameIdx++;
+  if(frameIdx>=FRAMES.length){stop();return;}
+  timer=setTimeout(step,speed);
+}
+function play(){
+  if(frameIdx>=FRAMES.length)frameIdx=0;
+  playing=true;
+  document.getElementById("btn-play").innerHTML="&#x23F8; Pause";
+  step();
+}
+function stop(){
+  playing=false;
+  clearTimeout(timer);
+  document.getElementById("btn-play").innerHTML="&#x25B6; Play";
+}
+function restart(){stop();frameIdx=0;draw(FRAMES[0],true);updateUI();}
+
+document.getElementById("btn-play").addEventListener("click",function(){playing?stop():play();});
+document.getElementById("btn-restart").addEventListener("click",restart);
+document.querySelectorAll(".speed-btn").forEach(function(b){
+  b.addEventListener("click",function(){
+    speed=+this.dataset.speed;
+    document.querySelectorAll(".speed-btn").forEach(function(x){x.classList.remove("active");});
+    this.classList.add("active");
+  });
+});
+
+draw(FRAMES[0],true);updateUI();
+})();
+</script>
+            </div>
+            
+            <!-- ABA 6: ATIVIDADES -->
+            <div id="activities" class="tab-content">
+                <h2>💪 Top 14 Tipos de Atividade</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="rank">#</th>
+                            <th>Tipo de Atividade</th>
+                            <th style="width: 100px;">Vezes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+        <tr>
+            <td class="rank">#1</td>
+            <td>Treinamento de Força</td>
+            <td>61</td>
+        </tr>
+        
+
+        <tr>
+            <td class="rank">#2</td>
+            <td>Outro</td>
+            <td>32</td>
+        </tr>
+        
+
+        <tr>
+            <td class="rank">#3</td>
+            <td>Ciclismo</td>
+            <td>30</td>
+        </tr>
+        
+
+        <tr>
+            <td class="rank">#4</td>
+            <td>Caminhada</td>
+            <td>24</td>
+        </tr>
+        
+
+        <tr>
+            <td class="rank">#5</td>
+            <td>Treinamento Funcional</td>
+            <td>22</td>
+        </tr>
+        
+
+        <tr>
+            <td class="rank">#6</td>
+            <td>Outro</td>
+            <td>20</td>
+        </tr>
+        
+
+        <tr>
+            <td class="rank">#7</td>
+            <td>Corrida</td>
+            <td>10</td>
+        </tr>
+        
+
+        <tr>
+            <td class="rank">#8</td>
+            <td>Esteira</td>
+            <td>5</td>
+        </tr>
+        
+
+        <tr>
+            <td class="rank">#9</td>
+            <td>Elíptico</td>
+            <td>5</td>
+        </tr>
+        
+
+        <tr>
+            <td class="rank">#10</td>
+            <td>Spinning</td>
+            <td>4</td>
+        </tr>
+        
+
+        <tr>
+            <td class="rank">#11</td>
+            <td>Outro</td>
+            <td>2</td>
+        </tr>
+        
+
+        <tr>
+            <td class="rank">#12</td>
+            <td>Calistenia</td>
+            <td>1</td>
+        </tr>
+        
+
+        <tr>
+            <td class="rank">#13</td>
+            <td>Dança</td>
+            <td>1</td>
+        </tr>
+        
+
+        <tr>
+            <td class="rank">#14</td>
+            <td>Outro</td>
+            <td>15</td>
+        </tr>
+        
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- ABA 7: CURIOSIDADES -->
+            <div id="curiosities" class="tab-content">
+                <h2>🎯 Curiosidades do Desafio</h2>
+                <div class="fun-fact">🏆 <strong>Victor Falcão</strong> é o campeão com 377.9 pontos!</div>
+<div class="fun-fact">⏱️ <strong>Victor Falcão</strong> foi o mais dedicado com 36.0 horas de atividade!</div>
+<div class="fun-fact">📊 <strong>Vinicius Oliveira</strong> fez 37 check-ins!</div>
+<div class="fun-fact">💪 A atividade favorita é <strong>Força</strong> com 66 ocorrências!</div>
+<div class="fun-fact">📈 A média de horas por participante é 15.2h!</div>
+<div class="fun-fact">🎯 O grupo realizou <strong>6 tipos diferentes</strong> de atividades!</div>
+<div class="fun-fact">🔥 <strong>Gleicy Oliveira</strong> foi consistente, treinando em 4 semanas!</div>
+<div class="fun-fact">⚡ <strong>Emerson Souza</strong> tem a melhor eficiência (17.02 pts/atividade)!</div>
+            </div>
+            
+            <!-- ABA 8: VAR -->
+            <div id="var" class="tab-content">
+                <h2>⚠️ VAR - Verificação de Atividades Reais</h2>
+                <p style="color: #666; margin-bottom: 20px;">Atividades suspeitas detectadas:</p>
+                
+        <div style="background: #fff3cd; border-left: 4px solid #ff9800; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+            <h4 style="margin: 0 0 10px 0; color: #d84315;">⚠️ Fernanda Carvalho</h4>
+        
+<p style="margin: 5px 0; color: #333;">• Cycling < 2km (0.00km) - Ciclismo (2026-06-13)</p>
+<p style="margin: 5px 0; color: #333;">• Walking < 2km (1.71km) - Caminhada (2026-06-24)</p>
+<p style="margin: 5px 0; color: #333;">• Walking < 2km (1.75km) - Caminhada (2026-06-26)</p>
+</div>
+            </div>
+
+            <!-- ABA 9: CATEGORIAS -->
+            <div id="classificacao" class="tab-content">
+                <div id="tab-classificacao"><style>.classificacao-container{padding:20px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);border-radius:10px;color:white;}.cat-selectors{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}.genero-selector,.periodo-selector{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}.periodo-selector{border-top:1px solid rgba(255,255,255,0.2);padding-top:12px;}.genero-btn,.periodo-btn{padding:9px 20px;border:2px solid rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);color:white;border-radius:25px;cursor:pointer;font-size:14px;font-weight:600;transition:all 0.25s ease;}.genero-btn:hover,.periodo-btn:hover{background:rgba(255,255,255,0.2);border-color:rgba(255,255,255,0.6);transform:translateY(-2px);}.genero-btn.active,.periodo-btn.active{background:rgba(255,255,255,0.3);border-color:white;box-shadow:0 0 20px rgba(255,255,255,0.35);transform:scale(1.05);}.cat-periodo-label{text-align:center;font-size:13px;opacity:0.75;margin-bottom:4px;letter-spacing:1px;text-transform:uppercase;}.categorias-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:24px;margin-top:20px;}.categoria-card{background:rgba(255,255,255,0.98);border-radius:18px;padding:0;color:#333;box-shadow:0 10px 40px rgba(0,0,0,0.15);transition:all 0.3s ease;position:relative;overflow:hidden;display:flex;flex-direction:column;}.categoria-card:hover{transform:translateY(-8px);box-shadow:0 15px 50px rgba(0,0,0,0.2);}.categoria-card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(180deg,var(--color-primary),var(--color-secondary));}.categoria-header{padding:28px 25px;text-align:center;background:linear-gradient(135deg,rgba(var(--color-rgb),0.1),rgba(var(--color-rgb),0.05));border-bottom:2px solid rgba(var(--color-rgb),0.1);}.categoria-icon{font-size:60px;line-height:1;margin-bottom:10px;display:inline-block;}.categoria-title{margin:0;font-size:17px;font-weight:700;color:var(--color-primary,#667eea);}.categoria-desc{font-size:12px;color:#999;margin:5px 0 0 0;font-weight:500;}.categoria-podio{padding:18px 22px;flex:1;display:flex;flex-direction:column;gap:10px;}.podio-place{display:flex;align-items:center;gap:12px;padding:10px 12px;background:linear-gradient(90deg,rgba(var(--color-rgb),0.08),transparent);border-left:4px solid var(--color-primary);border-radius:8px;}.podio-medal{font-size:30px;line-height:1;min-width:42px;text-align:center;}.podio-info{flex:1;min-width:0;}.podio-name{font-weight:700;color:var(--color-primary,#333);font-size:14px;word-break:break-word;margin:0;}.podio-points{font-size:12px;color:#666;margin-top:3px;font-weight:500;}.podio-empty{padding:20px;text-align:center;color:#ccc;font-size:13px;}.categoria-card[data-categoria="general"]{--color-primary:#FFD700;--color-secondary:#FFA500;--color-rgb:255,215,0;}.categoria-card[data-categoria="kom"]{--color-primary:#FF6B6B;--color-secondary:#EE5A6F;--color-rgb:255,107,107;}.categoria-card[data-categoria="velocista"]{--color-primary:#4ECDC4;--color-secondary:#44A5A2;--color-rgb:78,205,196;}.categoria-card[data-categoria="combativo"]{--color-primary:#F38181;--color-secondary:#D46A6A;--color-rgb:243,129,129;}.categoria-card[data-categoria="novato"]{--color-primary:#95E1D3;--color-secondary:#78D5C5;--color-rgb:149,225,211;}.categoria-card[data-categoria="ascensao"]{--color-primary:#A8E6CF;--color-secondary:#8DDCB8;--color-rgb:168,230,207;}.categoria-card[data-categoria="especialista"]{--color-primary:#FFD3B6;--color-secondary:#FFBC94;--color-rgb:255,211,182;}.categoria-card[data-categoria="versatil"]{--color-primary:#9A8FDB;--color-secondary:#8374C8;--color-rgb:154,143,219;}@media(max-width:768px){.categorias-grid{grid-template-columns:1fr;}.categoria-icon{font-size:48px;}.genero-btn,.periodo-btn{flex:1;min-width:80px;text-align:center;padding:8px 12px;font-size:13px;}}</style><div class="classificacao-container"><div class="cat-selectors"><div class="cat-periodo-label">Gênero</div><div class="genero-selector"><button class="genero-btn active" data-genero="geral">🌍 Geral</button><button class="genero-btn" data-genero="masculino">👨 Homens</button><button class="genero-btn" data-genero="feminino">👩 Mulheres</button></div><div class="cat-periodo-label">Período</div><div class="periodo-selector"><button class="periodo-btn active" data-periodo="ytd">📊 YTD</button><button class="periodo-btn" data-periodo="2026-06">Junho</button></div></div><div id="categorias-grid" class="categorias-grid"></div></div><script>const _catConfig = [  {key:"general",     nome:"Pódio Geral",            icon:"🏆", desc:"Maior pontuação acumulada",    unidade:" pts"},  {key:"kom",         nome:"Rei/Rainha da Montanha", icon:"👑", desc:"Especialista em força e HIIT", unidade:" pts"},  {key:"velocista",   nome:"Velocista",              icon:"💨", desc:"Especialista em cardio",       unidade:" pts"},  {key:"combativo",   nome:"Espírito Combativo",     icon:"🔥", desc:"Maior nº de dias treinados",   unidade:" dias"},  {key:"novato",      nome:"Melhor Novato",          icon:"👶", desc:"Melhor entre os novatos",      unidade:" pts"},  {key:"ascensao",    nome:"Ascensão Meteórica",     icon:"📈", desc:"Maior crescimento mês a mês (YTD)", unidade:" pts"},  {key:"especialista",nome:"Especialista",           icon:"🎯", desc:"Líder em sua especialidade",   unidade:" pts"},  {key:"versatil",    nome:"Treinador Versátil",     icon:"🔄", desc:"Mais tipos de treinos",        unidade:" tipos"},];const _medals = ["🥇","🥈","🥉"];const _catData = {"ytd": {"general": {"geral": [{"nome": "Victor Falcão", "pontos": 377.9}, {"nome": "Gleicy Oliveira", "pontos": 344.6}, {"nome": "Vinicius Oliveira", "pontos": 317.7}], "masculino": [{"nome": "Victor Falcão", "pontos": 377.9}], "feminino": [{"nome": "Caroline Nascimento", "pontos": 76.9}, {"nome": "Sabrina", "pontos": 4.1}]}, "kom": {"geral": [{"nome": "Vinicius Oliveira", "pontos": 228.3}, {"nome": "Luiza Cardoso", "pontos": 177.5}, {"nome": "Gleicy Oliveira", "pontos": 137.3}], "masculino": [{"nome": "Victor Falcão", "pontos": 44.0}], "feminino": [{"nome": "Caroline Nascimento", "pontos": 43.6}]}, "velocista": {"geral": [{"nome": "Victor Falcão", "pontos": 334.0}, {"nome": "Gleicy Oliveira", "pontos": 50.1}, {"nome": "Julia Lira", "pontos": 41.6}], "masculino": [{"nome": "Victor Falcão", "pontos": 334.0}], "feminino": [{"nome": "Sabrina", "pontos": 4.1}, {"nome": "Caroline Nascimento", "pontos": 0.2}]}, "combativo": {"geral": [{"nome": "Victor Falcão", "pontos": 18}, {"nome": "Fernanda Carvalho", "pontos": 15}, {"nome": "Gleicy Oliveira", "pontos": 15}], "masculino": [{"nome": "Victor Falcão", "pontos": 18}], "feminino": [{"nome": "Caroline Nascimento", "pontos": 7}, {"nome": "Sabrina", "pontos": 1}]}, "novato": {"geral": [{"nome": "Victor Falcão", "pontos": 377.9}, {"nome": "Gleicy Oliveira", "pontos": 344.6}, {"nome": "Vinicius Oliveira", "pontos": 317.7}], "masculino": [{"nome": "Victor Falcão", "pontos": 377.9}], "feminino": [{"nome": "Caroline Nascimento", "pontos": 76.9}, {"nome": "Sabrina", "pontos": 4.1}]}, "ascensao": {"geral": [], "masculino": [], "feminino": []}, "especialista": {"geral": [{"nome": "Victor Falcão", "pontos": 300.6, "atividade": "Ciclismo"}, {"nome": "Vinicius Oliveira", "pontos": 228.3, "atividade": "Treinamento de Força"}, {"nome": "Luiza Cardoso", "pontos": 177.5, "atividade": "Treinamento de Força"}], "masculino": [{"nome": "Victor Falcão", "pontos": 300.6, "atividade": "Ciclismo"}], "feminino": [{"nome": "Caroline Nascimento", "pontos": 33.0, "atividade": "Outro"}, {"nome": "Sabrina", "pontos": 4.1, "atividade": "Caminhada"}]}, "versatil": {"geral": [{"nome": "Fernanda Carvalho", "pontos": 8}, {"nome": "Gleicy Oliveira", "pontos": 6}, {"nome": "Julia Lira", "pontos": 6}], "masculino": [{"nome": "Victor Falcão", "pontos": 5}], "feminino": [{"nome": "Caroline Nascimento", "pontos": 3}, {"nome": "Sabrina", "pontos": 1}]}}, "2026-06": {"general": {"geral": [{"nome": "Victor Falcão", "pontos": 377.9}, {"nome": "Gleicy Oliveira", "pontos": 344.6}, {"nome": "Vinicius Oliveira", "pontos": 317.7}], "masculino": [{"nome": "Victor Falcão", "pontos": 377.9}], "feminino": [{"nome": "Caroline Nascimento", "pontos": 76.9}, {"nome": "Sabrina", "pontos": 4.1}]}, "kom": {"geral": [{"nome": "Vinicius Oliveira", "pontos": 228.3}, {"nome": "Luiza Cardoso", "pontos": 177.5}, {"nome": "Gleicy Oliveira", "pontos": 137.3}], "masculino": [{"nome": "Victor Falcão", "pontos": 44.0}], "feminino": [{"nome": "Caroline Nascimento", "pontos": 43.6}]}, "velocista": {"geral": [{"nome": "Victor Falcão", "pontos": 334.0}, {"nome": "Gleicy Oliveira", "pontos": 50.1}, {"nome": "Julia Lira", "pontos": 41.6}], "masculino": [{"nome": "Victor Falcão", "pontos": 334.0}], "feminino": [{"nome": "Sabrina", "pontos": 4.1}, {"nome": "Caroline Nascimento", "pontos": 0.2}]}, "combativo": {"geral": [{"nome": "Victor Falcão", "pontos": 18}, {"nome": "Fernanda Carvalho", "pontos": 15}, {"nome": "Gleicy Oliveira", "pontos": 15}], "masculino": [{"nome": "Victor Falcão", "pontos": 18}], "feminino": [{"nome": "Caroline Nascimento", "pontos": 7}, {"nome": "Sabrina", "pontos": 1}]}, "novato": {"geral": [{"nome": "Victor Falcão", "pontos": 377.9}, {"nome": "Gleicy Oliveira", "pontos": 344.6}, {"nome": "Vinicius Oliveira", "pontos": 317.7}], "masculino": [{"nome": "Victor Falcão", "pontos": 377.9}], "feminino": [{"nome": "Caroline Nascimento", "pontos": 76.9}, {"nome": "Sabrina", "pontos": 4.1}]}, "ascensao": {"geral": [], "masculino": [], "feminino": []}, "especialista": {"geral": [{"nome": "Victor Falcão", "pontos": 300.6, "atividade": "Ciclismo"}, {"nome": "Vinicius Oliveira", "pontos": 228.3, "atividade": "Treinamento de Força"}, {"nome": "Luiza Cardoso", "pontos": 177.5, "atividade": "Treinamento de Força"}], "masculino": [{"nome": "Victor Falcão", "pontos": 300.6, "atividade": "Ciclismo"}], "feminino": [{"nome": "Caroline Nascimento", "pontos": 33.0, "atividade": "Outro"}, {"nome": "Sabrina", "pontos": 4.1, "atividade": "Caminhada"}]}, "versatil": {"geral": [{"nome": "Fernanda Carvalho", "pontos": 8}, {"nome": "Gleicy Oliveira", "pontos": 6}, {"nome": "Julia Lira", "pontos": 6}], "masculino": [{"nome": "Victor Falcão", "pontos": 5}], "feminino": [{"nome": "Caroline Nascimento", "pontos": 3}, {"nome": "Sabrina", "pontos": 1}]}}, "__months__": [{"key": "2026-06", "label": "Junho"}]};let _curGenero = "geral";let _curPeriodo = "ytd";function _renderCat(){  const grid = document.getElementById("categorias-grid");  if(!grid) return;  const periodoData = _catData[_curPeriodo] || _catData["ytd"];  grid.innerHTML = "";  _catConfig.forEach(cfg => {    const card = document.createElement("div");    card.className = "categoria-card";    card.setAttribute("data-categoria", cfg.key);    const catData = periodoData[cfg.key] || {};    const data = catData[_curGenero] || [];    let podio = data.length === 0      ? "<div class='podio-empty'>Sem dados neste período</div>"      : data.slice(0,3).map((p,i) => {          const extra = p.atividade ? `<br><span style="font-size:11px;color:#999;">• ${p.atividade}</span>` : "";          return `<div class="podio-place"><div class="podio-medal">${_medals[i]}</div><div class="podio-info"><div class="podio-name">${p.nome}</div><div class="podio-points">${p.pontos}${cfg.unidade}${extra}</div></div></div>`;        }).join("");    card.innerHTML = `<div class="categoria-header"><div class="categoria-icon">${cfg.icon}</div><h3 class="categoria-title">${cfg.nome}</h3><p class="categoria-desc">${cfg.desc}</p></div><div class="categoria-podio">${podio}</div>`;    grid.appendChild(card);  });}document.querySelectorAll(".genero-btn").forEach(btn => {  btn.addEventListener("click", function(){    document.querySelectorAll(".genero-btn").forEach(b => b.classList.remove("active"));    this.classList.add("active");    _curGenero = this.getAttribute("data-genero");    _renderCat();  });});document.querySelectorAll(".periodo-btn").forEach(btn => {  btn.addEventListener("click", function(){    document.querySelectorAll(".periodo-btn").forEach(b => b.classList.remove("active"));    this.classList.add("active");    _curPeriodo = this.getAttribute("data-periodo");    _renderCat();  });});document.addEventListener("DOMContentLoaded", _renderCat);</script></div>
             </div>
         </div>
-
-        <div id="podium" class="tab-content">
-            <h2>🏆 Pódio Atual</h2>
-            <div class="podium"><div class="podium-item"><div class="podium-medal">🥇</div><div class="podium-name">Victor Falcão</div><div class="podium-points">91.8 pts</div><div style="font-size:0.9em;color:#666;margin-top:8px;">8 atividades<br>9.2h</div></div><div class="podium-item"><div class="podium-medal">🥈</div><div class="podium-name">Gleicy Oliveira</div><div class="podium-points">89.6 pts</div><div style="font-size:0.9em;color:#666;margin-top:8px;">10 atividades<br>7.9h</div></div><div class="podium-item"><div class="podium-medal">🥉</div><div class="podium-name">Vinicius Oliveira</div><div class="podium-points">63.8 pts</div><div style="font-size:0.9em;color:#666;margin-top:8px;">9 atividades<br>6.5h</div></div></div>
-            <h3>📊 Ranking Completo</h3>
-            <table><thead><tr><th class="rank">#</th><th>Nome</th><th style="width:100px;">Pontos</th><th style="width:100px;">Atividades</th><th style="width:100px;">Horas</th></tr></thead><tbody><tr><td class="rank">#1</td><td>Victor Falcão</td><td style="color:#667eea;font-weight:bold;">91.8</td><td>8</td><td>9.2h</td></tr><tr><td class="rank">#2</td><td>Gleicy Oliveira</td><td style="color:#667eea;font-weight:bold;">89.6</td><td>10</td><td>7.9h</td></tr><tr><td class="rank">#3</td><td>Vinicius Oliveira</td><td style="color:#667eea;font-weight:bold;">63.8</td><td>9</td><td>6.5h</td></tr><tr><td class="rank">#4</td><td>Thiago santos</td><td style="color:#667eea;font-weight:bold;">61.7</td><td>6</td><td>4.7h</td></tr><tr><td class="rank">#5</td><td>Luiza Cardoso</td><td style="color:#667eea;font-weight:bold;">54.1</td><td>7</td><td>4.8h</td></tr><tr><td class="rank">#6</td><td>Julia Lira</td><td style="color:#667eea;font-weight:bold;">36.1</td><td>7</td><td>4.3h</td></tr><tr><td class="rank">#7</td><td>Fernanda Carvalho</td><td style="color:#667eea;font-weight:bold;">33.9</td><td>5</td><td>4.2h</td></tr><tr><td class="rank">#8</td><td>Caroline Nascimento</td><td style="color:#667eea;font-weight:bold;">28.5</td><td>4</td><td>2.5h</td></tr></tbody></table>
-        </div>
-
-        <div id="monthly" class="tab-content">
-            <h2>📅 Ranking por Mês</h2>
-            <h3>Junho de 2026 (Em andamento)</h3>
-            <table><thead><tr><th class="rank">#</th><th>Nome</th><th style="width:100px;">Pontos</th><th style="width:100px;">Atividades</th><th style="width:100px;">Horas</th></tr></thead><tbody><tr><td class="rank">#1</td><td>Victor Falcão</td><td style="color:#667eea;font-weight:bold;">91.8</td><td>8</td><td>9.2h</td></tr><tr><td class="rank">#2</td><td>Gleicy Oliveira</td><td style="color:#667eea;font-weight:bold;">89.6</td><td>10</td><td>7.9h</td></tr><tr><td class="rank">#3</td><td>Vinicius Oliveira</td><td style="color:#667eea;font-weight:bold;">63.8</td><td>9</td><td>6.5h</td></tr><tr><td class="rank">#4</td><td>Thiago santos</td><td style="color:#667eea;font-weight:bold;">61.7</td><td>6</td><td>4.7h</td></tr><tr><td class="rank">#5</td><td>Luiza Cardoso</td><td style="color:#667eea;font-weight:bold;">54.1</td><td>7</td><td>4.8h</td></tr><tr><td class="rank">#6</td><td>Julia Lira</td><td style="color:#667eea;font-weight:bold;">36.1</td><td>7</td><td>4.3h</td></tr><tr><td class="rank">#7</td><td>Fernanda Carvalho</td><td style="color:#667eea;font-weight:bold;">33.9</td><td>5</td><td>4.2h</td></tr><tr><td class="rank">#8</td><td>Caroline Nascimento</td><td style="color:#667eea;font-weight:bold;">28.5</td><td>4</td><td>2.5h</td></tr></tbody></table>
-        </div>
-
-        <div id="weekly" class="tab-content">
-            <h2>📈 Ranking por Semana</h2>
-            <h3>Semana 1 (11/06 - 15/06) (Em andamento)</h3><table style="margin-bottom:30px;"><thead><tr><th class="rank">#</th><th>Nome</th><th style="width:90px;">Pts(Sem)</th><th style="width:90px;">Ativ(Sem)</th><th style="width:120px;">Pts(Acum)</th></tr></thead><tbody><tr><td class="rank">#1</td><td>Victor Falcão</td><td style="color:#667eea;font-weight:bold;">91.8</td><td>8</td><td style="font-weight:bold;">91.8</td></tr><tr><td class="rank">#2</td><td>Gleicy Oliveira</td><td style="color:#667eea;font-weight:bold;">89.6</td><td>10</td><td style="font-weight:bold;">89.6</td></tr><tr><td class="rank">#3</td><td>Vinicius Oliveira</td><td style="color:#667eea;font-weight:bold;">63.8</td><td>9</td><td style="font-weight:bold;">63.8</td></tr><tr><td class="rank">#4</td><td>Thiago santos</td><td style="color:#667eea;font-weight:bold;">61.7</td><td>6</td><td style="font-weight:bold;">61.7</td></tr><tr><td class="rank">#5</td><td>Luiza Cardoso</td><td style="color:#667eea;font-weight:bold;">54.1</td><td>7</td><td style="font-weight:bold;">54.1</td></tr><tr><td class="rank">#6</td><td>Julia Lira</td><td style="color:#667eea;font-weight:bold;">36.1</td><td>7</td><td style="font-weight:bold;">36.1</td></tr><tr><td class="rank">#7</td><td>Fernanda Carvalho</td><td style="color:#667eea;font-weight:bold;">33.9</td><td>5</td><td style="font-weight:bold;">33.9</td></tr><tr><td class="rank">#8</td><td>Caroline Nascimento</td><td style="color:#667eea;font-weight:bold;">28.5</td><td>4</td><td style="font-weight:bold;">28.5</td></tr></tbody></table>
-        </div>
-
-        <div id="evolution" class="tab-content">
-            <h2>📉 Evolução de Ranking (Pontos Acumulados)</h2>
-            <p style="font-size:0.9em;color:#666;">Evolução dos Top 10 ao longo das semanas</p>
-            <div style="margin-top:20px;position:relative;height:520px;"><canvas id="evolutionChart"></canvas></div>
-            <script>document.addEventListener("DOMContentLoaded",function(){var ctx=document.getElementById("evolutionChart").getContext("2d");new Chart(ctx,{type:"line",data:{labels:["Sem 1"],datasets:[{"label":"Victor Falcão","data":[91.8],"borderColor":"#FF6384","backgroundColor":"#FF6384","tension":0.3,"fill":false,"pointRadius":5,"pointHoverRadius":7,"borderWidth":2,"spanGaps":true},{"label":"Gleicy Oliveira","data":[89.6],"borderColor":"#36A2EB","backgroundColor":"#36A2EB","tension":0.3,"fill":false,"pointRadius":5,"pointHoverRadius":7,"borderWidth":2,"spanGaps":true},{"label":"Vinicius Oliveira","data":[63.8],"borderColor":"#FFCE56","backgroundColor":"#FFCE56","tension":0.3,"fill":false,"pointRadius":5,"pointHoverRadius":7,"borderWidth":2,"spanGaps":true},{"label":"Thiago santos","data":[61.7],"borderColor":"#4BC0C0","backgroundColor":"#4BC0C0","tension":0.3,"fill":false,"pointRadius":5,"pointHoverRadius":7,"borderWidth":2,"spanGaps":true},{"label":"Luiza Cardoso","data":[54.1],"borderColor":"#9966FF","backgroundColor":"#9966FF","tension":0.3,"fill":false,"pointRadius":5,"pointHoverRadius":7,"borderWidth":2,"spanGaps":true},{"label":"Julia Lira","data":[36.1],"borderColor":"#FF9F40","backgroundColor":"#FF9F40","tension":0.3,"fill":false,"pointRadius":5,"pointHoverRadius":7,"borderWidth":2,"spanGaps":true},{"label":"Fernanda Carvalho","data":[33.9],"borderColor":"#E7E9ED","backgroundColor":"#E7E9ED","tension":0.3,"fill":false,"pointRadius":5,"pointHoverRadius":7,"borderWidth":2,"spanGaps":true},{"label":"Caroline Nascimento","data":[28.5],"borderColor":"#71B37C","backgroundColor":"#71B37C","tension":0.3,"fill":false,"pointRadius":5,"pointHoverRadius":7,"borderWidth":2,"spanGaps":true}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:"right",labels:{usePointStyle:true,padding:14,font:{size:12}}}},scales:{y:{beginAtZero:true,ticks:{callback:function(v){return v+" pts";}},title:{display:true,text:"Pontos Acumulados"}},x:{title:{display:true,text:"Semana"}}},interaction:{mode:"index",intersect:false}}});});</script>
-        </div>
-
-        <div id="activities" class="tab-content">
-            <h2>💪 Tipos de Atividade</h2>
-            <table><thead><tr><th class="rank">#</th><th>Tipo de Atividade</th><th style="width:100px;">Vezes</th></tr></thead><tbody><tr><td class="rank">#1</td><td>Treinamento de Força</td><td>13</td></tr><tr><td class="rank">#2</td><td>Ciclismo</td><td>9</td></tr><tr><td class="rank">#3</td><td>Caminhada</td><td>9</td></tr><tr><td class="rank">#4</td><td>Escadas</td><td>7</td></tr><tr><td class="rank">#5</td><td>Corrida</td><td>4</td></tr><tr><td class="rank">#6</td><td>Escada Rolante</td><td>3</td></tr><tr><td class="rank">#7</td><td>Treinamento Funcional</td><td>3</td></tr><tr><td class="rank">#8</td><td>Outro</td><td>3</td></tr><tr><td class="rank">#9</td><td>Esteira</td><td>2</td></tr><tr><td class="rank">#10</td><td>Elíptico</td><td>2</td></tr><tr><td class="rank">#11</td><td>Calistenia</td><td>1</td></tr></tbody></table>
-        </div>
-
-        <div id="curiosities" class="tab-content">
-            <h2>🎯 Curiosidades do Desafio</h2>
-            <div class="fun-fact">🏆 <strong>Victor Falcão</strong> lidera a competição com 91.8 pontos!</div>
-<div class="fun-fact">💪 <strong>Gleicy Oliveira</strong> fez mais check-ins: 10 atividades!</div>
-<div class="fun-fact">⏱️ <strong>Victor Falcão</strong> acumulou mais horas: 9.2h!</div>
-<div class="fun-fact">🔄 <strong>Julia Lira</strong> é o mais versátil com 5 tipos de atividade!</div>
-<div class="fun-fact">📊 A atividade favorita do grupo é <strong>Treinamento de Força</strong> com 13 ocorrências!</div>
-<div class="fun-fact">🔥 <strong>Victor Falcão</strong> treinou em mais dias: 5 dias diferentes!</div>
-        </div>
-
-        <div id="var" class="tab-content">
-            <h2>⚠️ VAR - Verificação de Atividades Reais</h2>
-            <p style="color:#666;margin-bottom:20px;">Atividades suspeitas detectadas:</p>
-            <div style="background:#fff3cd;border-left:4px solid #ff9800;padding:15px;margin-bottom:20px;border-radius:4px;"><h4 style="margin:0 0 10px 0;color:#d84315;">⚠️ Fernanda Carvalho</h4><p style="margin:5px 0;color:#333;">• Duração < 15min (11min) - Academia - Trabalho 🚲✨🩷 (2026-06-11)</p><p style="margin:5px 0;color:#333;">• Ciclismo < 2km (0.00km) - Ciclismo (2026-06-13)</p></div><div style="background:#fff3cd;border-left:4px solid #ff9800;padding:15px;margin-bottom:20px;border-radius:4px;"><h4 style="margin:0 0 10px 0;color:#d84315;">⚠️ Luiza Cardoso</h4><p style="margin:5px 0;color:#333;">• Duração < 15min (9min) - 🪜 (2026-06-12)</p></div><div style="background:#fff3cd;border-left:4px solid #ff9800;padding:15px;margin-bottom:20px;border-radius:4px;"><h4 style="margin:0 0 10px 0;color:#d84315;">⚠️ Thiago santos</h4><p style="margin:5px 0;color:#333;">• Duração < 15min (5min) - Cardio (2026-06-13)</p></div>
-        </div>
-
+        
+        <footer>
+            <p>Atualizado em 29/06/2026 às 12:53</p>
+            <p>Tembici Rats Challenge • GymRats Analytics</p>
+        </footer>
     </div>
-    <footer>
-        <p>Atualizado em 15/06/2026</p>
-        <p>Work ou #OpentoWork Challenge • GymRats Analytics</p>
-    </footer>
-</div>
-
-<script>
-function switchTab(event, tabName) {
-    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById(tabName).classList.add('active');
-    event.target.classList.add('active');
-}
-const _catConfig = [
-    {key:"general",      nome:"Pódio Geral",            icon:"🏆", desc:"Maior pontuação acumulada",         unidade:" pts"},
-    {key:"kom",          nome:"Rei/Rainha da Montanha", icon:"👑", desc:"Especialista em força e funcional",  unidade:" pts"},
-    {key:"velocista",    nome:"Velocista",              icon:"💨", desc:"Especialista em cardio",            unidade:" pts"},
-    {key:"combativo",    nome:"Espírito Combativo",     icon:"🔥", desc:"Maior nº de dias treinados",        unidade:" dias"},
-    {key:"novato",       nome:"Melhor Novato",          icon:"👶", desc:"Melhor entre os iniciantes",        unidade:" pts"},
-    {key:"ascensao",     nome:"Ascensão Meteórica",     icon:"📈", desc:"Maior crescimento mês a mês (YTD)",unidade:" pts"},
-    {key:"especialista", nome:"Especialista",           icon:"🎯", desc:"Líder em sua especialidade",        unidade:" pts"},
-    {key:"versatil",     nome:"Treinador Versátil",     icon:"🔄", desc:"Mais tipos de treinos",            unidade:" tipos"},
-];
-const _medals = ["🥇","🥈","🥉"];
-const _catData = {"ytd": {"general": {"geral": [{"nome": "Victor Falc\u00e3o", "pontos": 91.8}, {"nome": "Gleicy Oliveira", "pontos": 89.6}, {"nome": "Vinicius Oliveira", "pontos": 63.8}], "masculino": [{"nome": "Victor Falc\u00e3o", "pontos": 91.8}, {"nome": "Vinicius Oliveira", "pontos": 63.8}, {"nome": "Thiago santos", "pontos": 61.7}], "feminino": [{"nome": "Gleicy Oliveira", "pontos": 89.6}, {"nome": "Luiza Cardoso", "pontos": 54.1}, {"nome": "Julia Lira", "pontos": 36.1}]}, "ascensao": {"geral": [], "masculino": [], "feminino": []}, "kom": {"geral": [{"nome": "Gleicy Oliveira", "pontos": 75.6}, {"nome": "Thiago santos", "pontos": 61.7}, {"nome": "Vinicius Oliveira", "pontos": 54.3}], "masculino": [{"nome": "Thiago santos", "pontos": 61.7}, {"nome": "Vinicius Oliveira", "pontos": 54.3}, {"nome": "Victor Falc\u00e3o", "pontos": 8.0}], "feminino": [{"nome": "Gleicy Oliveira", "pontos": 75.6}, {"nome": "Luiza Cardoso", "pontos": 51.4}, {"nome": "Caroline Nascimento", "pontos": 28.5}]}, "velocista": {"geral": [{"nome": "Victor Falc\u00e3o", "pontos": 83.8}, {"nome": "Julia Lira", "pontos": 32.3}, {"nome": "Fernanda Carvalho", "pontos": 23.0}], "masculino": [{"nome": "Victor Falc\u00e3o", "pontos": 83.8}, {"nome": "Vinicius Oliveira", "pontos": 9.6}], "feminino": [{"nome": "Julia Lira", "pontos": 32.3}, {"nome": "Fernanda Carvalho", "pontos": 23.0}, {"nome": "Gleicy Oliveira", "pontos": 14.0}]}, "combativo": {"geral": [{"nome": "Victor Falc\u00e3o", "pontos": 5}, {"nome": "Gleicy Oliveira", "pontos": 5}, {"nome": "Vinicius Oliveira", "pontos": 4}], "masculino": [{"nome": "Victor Falc\u00e3o", "pontos": 5}, {"nome": "Vinicius Oliveira", "pontos": 4}, {"nome": "Thiago santos", "pontos": 2}], "feminino": [{"nome": "Gleicy Oliveira", "pontos": 5}, {"nome": "Julia Lira", "pontos": 3}, {"nome": "Fernanda Carvalho", "pontos": 3}]}, "novato": {"geral": [{"nome": "Victor Falc\u00e3o", "pontos": 91.8}, {"nome": "Gleicy Oliveira", "pontos": 89.6}, {"nome": "Vinicius Oliveira", "pontos": 63.8}], "masculino": [{"nome": "Victor Falc\u00e3o", "pontos": 91.8}, {"nome": "Vinicius Oliveira", "pontos": 63.8}, {"nome": "Thiago santos", "pontos": 61.7}], "feminino": [{"nome": "Gleicy Oliveira", "pontos": 89.6}, {"nome": "Luiza Cardoso", "pontos": 54.1}, {"nome": "Julia Lira", "pontos": 36.1}]}, "especialista": {"geral": [{"nome": "Victor Falc\u00e3o", "pontos": 73.3, "atividade": "Ciclismo"}, {"nome": "Vinicius Oliveira", "pontos": 50.6, "atividade": "Treinamento de For\u00e7a"}, {"nome": "Thiago santos", "pontos": 49.6, "atividade": "Treinamento de For\u00e7a"}], "masculino": [{"nome": "Victor Falc\u00e3o", "pontos": 73.3, "atividade": "Ciclismo"}, {"nome": "Vinicius Oliveira", "pontos": 50.6, "atividade": "Treinamento de For\u00e7a"}, {"nome": "Thiago santos", "pontos": 49.6, "atividade": "Treinamento de For\u00e7a"}], "feminino": [{"nome": "Gleicy Oliveira", "pontos": 38.1, "atividade": "Treinamento Funcional"}, {"nome": "Luiza Cardoso", "pontos": 37.9, "atividade": "Treinamento de For\u00e7a"}, {"nome": "Caroline Nascimento", "pontos": 19.2, "atividade": "Treinamento de For\u00e7a"}]}, "versatil": {"geral": [{"nome": "Julia Lira", "pontos": 5}, {"nome": "Luiza Cardoso", "pontos": 4}, {"nome": "Fernanda Carvalho", "pontos": 4}], "masculino": [{"nome": "Victor Falc\u00e3o", "pontos": 3}, {"nome": "Vinicius Oliveira", "pontos": 3}, {"nome": "Thiago santos", "pontos": 3}], "feminino": [{"nome": "Julia Lira", "pontos": 5}, {"nome": "Luiza Cardoso", "pontos": 4}, {"nome": "Fernanda Carvalho", "pontos": 4}]}}, "__months__": []};
-let _curGenero = "geral";
-let _curPeriodo = "ytd";
-function _renderCat() {
-    const grid = document.getElementById("categorias-grid");
-    if (!grid) return;
-    const periodoData = _catData[_curPeriodo] || _catData["ytd"];
-    grid.innerHTML = "";
-    _catConfig.forEach(cfg => {
-        const card = document.createElement("div");
-        card.className = "categoria-card";
-        card.setAttribute("data-categoria", cfg.key);
-        const catData = periodoData[cfg.key] || {};
-        const data = catData[_curGenero] || [];
-        let podio = data.length === 0
-            ? "<div class='podio-empty'>Sem dados neste período</div>"
-            : data.slice(0,3).map((p,i) => {
-                const extra = p.atividade ? "<br><span style='font-size:11px;color:#999;'>• " + p.atividade + "</span>" : "";
-                return "<div class='podio-place'><div class='podio-medal'>" + _medals[i] + "</div><div class='podio-info'><div class='podio-name'>" + p.nome + "</div><div class='podio-points'>" + p.pontos + cfg.unidade + extra + "</div></div></div>";
-            }).join("");
-        card.innerHTML = "<div class='categoria-header'><div class='categoria-icon'>" + cfg.icon + "</div><h3 class='categoria-title'>" + cfg.nome + "</h3><p class='categoria-desc'>" + cfg.desc + "</p></div><div class='categoria-podio'>" + podio + "</div>";
-        grid.appendChild(card);
-    });
-}
-document.querySelectorAll(".genero-btn").forEach(btn => {
-    btn.addEventListener("click", function() {
-        document.querySelectorAll(".genero-btn").forEach(b => b.classList.remove("active"));
-        this.classList.add("active");
-        _curGenero = this.getAttribute("data-genero");
-        _renderCat();
-    });
-});
-document.querySelectorAll(".periodo-btn").forEach(btn => {
-    btn.addEventListener("click", function() {
-        document.querySelectorAll(".periodo-btn").forEach(b => b.classList.remove("active"));
-        this.classList.add("active");
-        _curPeriodo = this.getAttribute("data-periodo");
-        _renderCat();
-    });
-});
-document.addEventListener("DOMContentLoaded", _renderCat);
-</script>
+    
+    <script>
+        function switchTab(event, tabName) {
+            // Remove active de todos
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            
+            // Adiciona active ao selecionado
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
 </body>
 </html>
